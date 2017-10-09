@@ -598,7 +598,7 @@ public class VRAppState extends AbstractAppState {
             settings.setFrequency(environment.getVRHardware().getDisplayFrequency());
             settings.setFullscreen(false);
             settings.setVSync(false); // stop vsyncing on primary monitor!
-            settings.setSwapBuffers(environment.isSwapBuffers());
+//            settings.setSwapBuffers(environment.isSwapBuffers());
         }
 
         // Updating application settings
