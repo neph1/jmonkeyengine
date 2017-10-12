@@ -1039,6 +1039,7 @@ public class ParticleEmitter extends Geometry {
         if (!selectRandomImage) {
             p.imageIndex = (int) (b * imagesX * imagesY);
         }
+        particleInfluencer.influenceRealtime(p, tpf);
     }
 
     private void updateParticleState(float tpf) {

@@ -53,6 +53,9 @@ public interface ParticleInfluencer extends Savable, Cloneable, JmeCloneable {
      */
     void influenceParticle(Particle particle, EmitterShape emitterShape);
 
+    void influenceRealtime(Particle particle, float tpf);
+    
+    public void update(float tpf);
     /**
      * This method clones the influencer instance.
      * @return cloned instance
