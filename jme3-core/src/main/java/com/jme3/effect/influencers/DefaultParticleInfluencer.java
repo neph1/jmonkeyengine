@@ -159,4 +159,10 @@ public class DefaultParticleInfluencer implements ParticleInfluencer {
     public float getVelocityVariation() {
         return velocityVariation;
     }
+    
+    public void influenceRealtime(Particle particle, float tpf) {
+}
+
+    public void update(float tpf) {
+    }
 }
