@@ -171,45 +171,7 @@ public class OpenVRViewManager extends AbstractVRViewManager {
     
     @Override
     public void render() {
-    	if (environment != null){
-    		// grab the observer
-            Object obs = environment.getObserver();
-            TempVars temp = TempVars.get();
-            Quaternion objRot = temp.quat1;
-            Vector3f objPos = temp.vect1;
-            if( obs instanceof Camera ) {
-                objRot.set(((Camera)obs).getRotation());
-                objPos.set(((Camera)obs).getLocation());
-            } else {
-                objRot.set(((Spatial)obs).getWorldRotation());
-                objPos.set(((Spatial)obs).getWorldTranslation());
-            }
-            // grab the hardware handle
-            VRAPI dev = environment.getVRHardware();
-            if( dev != null ) {
-            	
-
-                // update the HMD's position & orientation
-                dev.updatePose();
-                dev.getPositionAndOrientation(hmdPos, hmdRot);
-
-                if( obs != null ) {
-                    // update hmdPos based on obs rotation
-                    finalRotation.set(objRot);
-                    finalRotation.mult(hmdPos, hmdPos);
-                    finalRotation.multLocal(hmdRot);
-                }
-                
-                finalizeCamera(dev.getHMDVectorPoseLeftEye(), objPos, getLeftCamera());
-                finalizeCamera(dev.getHMDVectorPoseRightEye(), objPos, getRightCamera());
-            } else {
-            	getLeftCamera().setFrame(objPos, objRot);
-            	getRightCamera().setFrame(objPos, objRot);
-            }
-            temp.release();
-    	} else {
-            throw new IllegalStateException("This VR view manager is not attached to any VR environment.");
-      	} 
+    	
     }
     
     @Override
@@ -444,6 +406,45 @@ public class OpenVRViewManager extends AbstractVRViewManager {
     
     @Override
     public void update(float tpf) {
+        if (environment != null){
+    		// grab the observer
+            Object obs = environment.getObserver();
+            TempVars temp = TempVars.get();
+            Quaternion objRot = temp.quat1;
+            Vector3f objPos = temp.vect1;
+            if( obs instanceof Camera ) {
+                objRot.set(((Camera)obs).getRotation());
+                objPos.set(((Camera)obs).getLocation());
+            } else {
+                objRot.set(((Spatial)obs).getWorldRotation());
+                objPos.set(((Spatial)obs).getWorldTranslation());
+            }
+            // grab the hardware handle
+            VRAPI dev = environment.getVRHardware();
+            if( dev != null ) {
+            	
+
+                // update the HMD's position & orientation
+                dev.updatePose();
+                dev.getPositionAndOrientation(hmdPos, hmdRot);
+
+                if( obs != null ) {
+                    // update hmdPos based on obs rotation
+                    finalRotation.set(objRot);
+                    finalRotation.mult(hmdPos, hmdPos);
+                    finalRotation.multLocal(hmdRot);
+                }
+                
+                finalizeCamera(dev.getHMDVectorPoseLeftEye(), objPos, getLeftCamera());
+                finalizeCamera(dev.getHMDVectorPoseRightEye(), objPos, getRightCamera());
+            } else {
+            	getLeftCamera().setFrame(objPos, objRot);
+            	getRightCamera().setFrame(objPos, objRot);
+            }
+            temp.release();
+    	} else {
+            throw new IllegalStateException("This VR view manager is not attached to any VR environment.");
+      	} 
         if( environment.hasTraditionalGUIOverlay() ) {
             // update the mouse?
             environment.getVRMouseManager().update(tpf);
