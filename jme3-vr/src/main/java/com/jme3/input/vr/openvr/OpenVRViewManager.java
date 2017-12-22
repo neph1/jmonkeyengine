@@ -447,7 +447,7 @@ public class OpenVRViewManager extends AbstractVRViewManager {
       	} 
         if( environment.hasTraditionalGUIOverlay() ) {
             // update the mouse?
-            environment.getVRMouseManager().update(tpf);
+//            environment.getVRMouseManager().update(tpf);
 
             // update GUI position?
             if( environment.getVRGUIManager().isWantsReposition() || environment.getVRGUIManager().getPositioningMode() != VRGUIPositioningMode.MANUAL ) {
