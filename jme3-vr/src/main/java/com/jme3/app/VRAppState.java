@@ -403,7 +403,6 @@ public class VRAppState extends AbstractAppState {
             // it will get updated automatically in the viewmanager update otherwise
             // TODO isn't this done by SimpleApplication?
             for (Spatial spatial : application.getGuiViewPort().getScenes()) {
-            	//spatial.updateLogicalState(tpf);
             	spatial.updateGeometricState();
             }    
         }
