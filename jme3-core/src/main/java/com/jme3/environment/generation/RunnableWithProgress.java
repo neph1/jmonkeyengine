@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2015 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,9 +61,9 @@ public abstract class RunnableWithProgress implements Runnable {
     }
 
     /**
-     * return the curent progress of the process.
+     * return the current progress of the process.
      *
-     * @return
+     * @return fraction (&ge;0, &le;1)
      */
     public double getProgress() {
         return (double) progress / (double) end;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,13 +41,9 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.OutputCapsule;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.debug.Arrow;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * <p>PhysicsVehicleNode - Special PhysicsNode that implements vehicle functions</p>
@@ -275,8 +271,8 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     }
 
     /**
-     * This vaue caps the maximum suspension force, raise this above the default 6000 if your suspension cannot
-     * handle the weight of your vehcile.
+     * This value caps the maximum suspension force, raise this above the default 6000 if your suspension cannot
+     * handle the weight of your vehicle.
      * @param maxSuspensionForce
      */
     public void setMaxSuspensionForce(float maxSuspensionForce) {
@@ -284,8 +280,8 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     }
 
     /**
-     * This vaue caps the maximum suspension force, raise this above the default 6000 if your suspension cannot
-     * handle the weight of your vehcile.
+     * This value caps the maximum suspension force, raise this above the default 6000 if your suspension cannot
+     * handle the weight of your vehicle.
      * @param wheel
      * @param maxSuspensionForce
      */
@@ -305,7 +301,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
      * After adding the wheel, use direct wheel access.<br>
      * The damping coefficient for when the suspension is compressed.
      * Set to k * 2.0 * FastMath.sqrt(m_suspensionStiffness) so k is proportional to critical damping.<br>
-     * k = 0.0 undamped & bouncy, k = 1.0 critical damping<br>
+     * k = 0.0 undamped/bouncy, k = 1.0 critical damping<br>
      * 0.1 to 0.3 are good values
      * @param suspensionCompression the suspensionCompression to set
      */
@@ -316,7 +312,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
     /**
      * The damping coefficient for when the suspension is compressed.
      * Set to k * 2.0 * FastMath.sqrt(m_suspensionStiffness) so k is proportional to critical damping.<br>
-     * k = 0.0 undamped & bouncy, k = 1.0 critical damping<br>
+     * k = 0.0 undamped/bouncy, k = 1.0 critical damping<br>
      * 0.1 to 0.3 are good values
      * @param wheel
      * @param suspensionCompression
@@ -447,7 +443,7 @@ public class PhysicsVehicle extends PhysicsRigidBody {
 
     /**
      * Get the current speed of the vehicle in km/h
-     * @return
+     * @return the speed
      */
     public float getCurrentVehicleSpeedKmHour() {
         return vehicle.getCurrentSpeedKmHour();

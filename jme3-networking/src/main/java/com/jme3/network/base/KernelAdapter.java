@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -152,7 +152,7 @@ public class KernelAdapter extends Thread
      *  than for any user-code safety.  99% of the time the user code should
      *  be writing for multithreaded access anyway.
      *
-     *  <p>The issue with the messages is that if a an implementation is
+     *  <p>The issue with the messages is that if an implementation is
      *  using a general thread pool then it would be possible for a 
      *  naive implementation to have one thread grab an Envelope from
      *  connection 1's and another grab the next Envelope.  Since an Envelope
@@ -180,7 +180,7 @@ public class KernelAdapter extends Thread
                 if( reliable ) {
                     // If it's a reliable connection then it's slightly more
                     // concerning but this can happen all the time for a UDP endpoint.
-                    log.log( Level.WARNING, "Recieved message from unconnected endpoint:" + p + "  message:" + m );
+                    log.log( Level.WARNING, "Received message from unconnected endpoint:" + p + "  message:" + m );
                 }                    
                 return; 
             }

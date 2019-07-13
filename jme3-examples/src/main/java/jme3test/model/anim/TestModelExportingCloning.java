@@ -31,8 +31,7 @@
  */
 package jme3test.model.anim;
 
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
+import com.jme3.anim.AnimComposer;
 import com.jme3.app.SimpleApplication;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.light.DirectionalLight;
@@ -52,6 +51,31 @@ public class TestModelExportingCloning extends SimpleApplication {
         Spatial s = assetManager.loadModel("Models/gltf/human/human.j3o");
         rootNode.attachChild(s);
 
-        rootNode.addLight(new DirectionalLight(new Vector3f(-1,-1,-1)));
+        DirectionalLight dl = new DirectionalLight();
+        dl.setDirection(new Vector3f(-0.1f, -0.7f, -1).normalizeLocal());
+        dl.setColor(new ColorRGBA(1f, 1f, 1f, 1.0f));
+        rootNode.addLight(dl);
+
+        AnimComposer composer;
+
+        Spatial originalModel = assetManager.loadModel("Models/Oto/Oto.mesh.xml");
+        composer = originalModel.getControl(AnimComposer.class);
+        composer.setCurrentAction("Walk");
+        composer.setGlobalSpeed(1.5f);
+        rootNode.attachChild(originalModel);
+        
+        Spatial clonedModel = originalModel.clone();
+        clonedModel.move(10, 0, 0);
+        composer = clonedModel.getControl(AnimComposer.class);
+        composer.setCurrentAction("push");
+        System.out.println("clonedModel: globalSpeed=" + composer.getGlobalSpeed());
+        rootNode.attachChild(clonedModel);
+        
+        Spatial exportedModel = BinaryExporter.saveAndLoad(assetManager, originalModel);
+        exportedModel.move(20, 0, 0);
+        composer = exportedModel.getControl(AnimComposer.class);
+        composer.setCurrentAction("pull");
+        System.out.println("exportedModel: globalSpeed=" + composer.getGlobalSpeed());
+        rootNode.attachChild(exportedModel);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 jMonkeyEngine
+ * Copyright (c) 2015-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -90,7 +90,7 @@ public abstract class AbstractMessageDelegator<S extends MessageConnection>
     /**
      *  Returns true if the specified method is valid for the specified
      *  message type.  This is used internally during automapping to
-     *  provide implementation specific filting of methods.
+     *  provide implementation specific filtering of methods.
      *  This implementation checks for methods that take either the connection and message 
      *  type arguments (in that order) or just the message type.
      */
@@ -111,17 +111,17 @@ public abstract class AbstractMessageDelegator<S extends MessageConnection>
             if( MessageConnection.class.isAssignableFrom(parms[0]) ) {
                 messageIndex++;
             } else {
-                log.finest("First paramter is not a MessageConnection or subclass.");
+                log.finest("First parameter is not a MessageConnection or subclass.");
                 return false;
             }
         }
  
         if( messageType == null && !Message.class.isAssignableFrom(parms[messageIndex]) ) {
-            log.finest("Second paramter is not a Message or subclass.");
+            log.finest("Second parameter is not a Message or subclass.");
             return false;
         }
         if( messageType != null && !parms[messageIndex].isAssignableFrom(messageType) ) {
-            log.log(Level.FINEST, "Second paramter is not a {0}", messageType);
+            log.log(Level.FINEST, "Second parameter is not a {0}", messageType);
             return false;
         }
         return true;            
@@ -129,7 +129,7 @@ public abstract class AbstractMessageDelegator<S extends MessageConnection>
  
     /**
      *  Convenience method that returns the message type as
-     *  reflecively determined for a particular method.  This
+     *  reflectively determined for a particular method.  This
      *  only works with methods that actually have arguments.
      *  This implementation returns the last element of the method's
      *  getParameterTypes() array, thus supporting both 
@@ -167,7 +167,7 @@ public abstract class AbstractMessageDelegator<S extends MessageConnection>
     /**
      *  Returns true if the specified method name is allowed.
      *  This is used by automapping to determine if a method
-     *  should be rejected purely on name.  Default implemention
+     *  should be rejected purely on name.  Default implementation
      *  always returns true.
      */
     protected boolean allowName( String name ) {

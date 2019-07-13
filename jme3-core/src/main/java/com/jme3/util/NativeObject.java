@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,8 @@ public abstract class NativeObject implements Cloneable {
                                OBJTYPE_SHADERSOURCE = 5,
                                OBJTYPE_AUDIOBUFFER  = 6,
                                OBJTYPE_AUDIOSTREAM  = 7,
-                               OBJTYPE_FILTER       = 8;
+                               OBJTYPE_FILTER       = 8,
+                               OBJTYPE_BO           = 9;
     
     /**
      * The object manager to which this NativeObject is registered to.
@@ -79,10 +80,8 @@ public abstract class NativeObject implements Cloneable {
     protected boolean updateNeeded = true;
 
     /**
-     * Creates a new GLObject with the given type. Should be
+     * Creates a new GLObject. Should be
      * called by the subclasses.
-     * 
-     * @param type The type that the subclass represents.
      */
     public NativeObject(){
         this.handleRef = new Object();

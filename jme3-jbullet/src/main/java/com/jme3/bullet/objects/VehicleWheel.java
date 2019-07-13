@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2018 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -178,7 +178,7 @@ public class VehicleWheel implements Savable {
     /**
      * the damping coefficient for when the suspension is compressed.
      * Set to k * 2.0 * FastMath.sqrt(m_suspensionStiffness) so k is proportional to critical damping.<br>
-     * k = 0.0 undamped & bouncy, k = 1.0 critical damping<br>
+     * k = 0.0 undamped/bouncy, k = 1.0 critical damping<br>
      * 0.1 to 0.3 are good values
      * @param wheelsDampingCompression
      */
@@ -237,7 +237,7 @@ public class VehicleWheel implements Savable {
 
     /**
      * The maximum suspension force, raise this above the default 6000 if your suspension cannot
-     * handle the weight of your vehcile.
+     * handle the weight of your vehicle.
      * @param maxSuspensionForce
      */
     public void setMaxSuspensionForce(float maxSuspensionForce) {

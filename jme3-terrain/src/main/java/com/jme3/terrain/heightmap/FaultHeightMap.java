@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Creates an heightmap based on the fault algorithm. Each iteration, a random line
+ * Creates a heightmap based on the fault algorithm. Each iteration, a random line
  * crossing the map is generated. On one side height values are raised, on the other side
  * lowered.
  * @author cghislai
@@ -97,7 +97,8 @@ public class FaultHeightMap extends AbstractHeightMap {
      * @param minFaultHeight Height modified on each side
      * @param maxFaultHeight Height modified on each side
      * @param seed A seed to feed the Random generator
-     * @see setFaultRange, setMinRadius, setMaxRadius
+     * @see #setMinRadius(float)
+     * @see #setMaxRadius(float) 
      */
     public FaultHeightMap(int size, int iterations, int faultType, int faultShape, float minFaultHeight, float maxFaultHeight, long seed) throws Exception {
         if (size < 0 || iterations < 0) {
@@ -118,7 +119,7 @@ public class FaultHeightMap extends AbstractHeightMap {
     }
 
     /**
-     * Create an heightmap with linear step faults.
+     * Create a heightmap with linear step faults.
      * @param size size of heightmap
      * @param iterations number of iterations
      * @param minFaultHeight Height modified on each side
@@ -240,7 +241,7 @@ public class FaultHeightMap extends AbstractHeightMap {
                 return val;
             }
         }
-        //shoudn't go here
+        //shouldn't go here
         throw new RuntimeException("Code needs update to switch allcases");
     }
 

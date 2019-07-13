@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -464,7 +464,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * gets the height of the water plane
-     * @return
+     * @return the height
      */
     public float getWaterHeight() {
         return waterHeight;
@@ -517,7 +517,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * returns the waterTransparency value
-     * @return
+     * @return the transparency value
      */
     public float getWaterTransparency() {
         return waterTransparency;
@@ -539,7 +539,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * Returns the normal scales applied to the normal map
-     * @return
+     * @return the scale factor
      */
     public float getNormalScale() {
         return normalScale;
@@ -559,8 +559,8 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
     }
 
     /**
-     * returns the refractoin constant
-     * @return 
+     * returns the refraction constant
+     * @return the refraction constant
      */
     public float getRefractionConstant() {
         return refractionConstant;
@@ -569,8 +569,8 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
     /**
      * This is a constant related to the index of refraction (IOR) used to compute the fresnel term.
      * F = R0 + (1-R0)( 1 - N.V)^5
-     * where F is the fresnel term, R0 the constant, N the normal vector and V tne view vector.
-     * It usually depend on the material you are lookinh through (here water).
+     * where F is the fresnel term, R0 the constant, N the normal vector and V the view vector.
+     * It usually depend on the material you are looking through (here water).
      * Default value is 0.3f
      * In practice, the lowest the value and the less the reflection can be seen on water
      * @param refractionConstant
@@ -584,7 +584,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * return the maximum wave amplitude
-     * @return 
+     * @return the maximum amplitude
      */
     public float getMaxAmplitude() {
         return maxAmplitude;
@@ -604,7 +604,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * gets the light direction
-     * @return
+     * @return the pre-existing vector
      */
     public Vector3f getLightDirection() {
         return lightDirection;
@@ -623,7 +623,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * returns the light color
-     * @return
+     * @return the pre-existing instance
      */
     public ColorRGBA getLightColor() {
         return lightColor;
@@ -643,7 +643,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * Return the shoreHardeness
-     * @return
+     * @return the hardness value
      */
     public float getShoreHardness() {
         return shoreHardness;
@@ -664,7 +664,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * returns the foam hardness
-     * @return
+     * @return the hardness value
      */
     public float getFoamHardness() {
         return foamHardness;
@@ -683,8 +683,8 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
     }
 
     /**
-     * returns the refractionStrenght
-     * @return
+     * returns the refractionStrength
+     * @return the strength value
      */
     public float getRefractionStrength() {
         return refractionStrength;
@@ -692,7 +692,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * This value modifies current fresnel term. If you want to weaken
-     * reflections use bigger value. If you want to empasize them use
+     * reflections use bigger value. If you want to emphasize them use
      * value smaller then 0. Default is 0.0f.
      * @param refractionStrength
      */
@@ -705,7 +705,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * returns the scale factor of the waves height map
-     * @return
+     * @return the scale factor
      */
     public float getWaveScale() {
         return waveScale;
@@ -725,8 +725,8 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
     }
 
     /**
-     * returns the foam existance vector
-     * @return
+     * returns the foam existence vector
+     * @return the pre-existing vector
      */
     public Vector3f getFoamExistence() {
         return foamExistence;
@@ -748,7 +748,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * gets the scale of the sun
-     * @return
+     * @return the scale factor
      */
     public float getSunScale() {
         return sunScale;
@@ -766,8 +766,8 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
     }
 
     /**
-     * Returns the color exctinction vector of the water
-     * @return
+     * Returns the color extinction vector of the water
+     * @return the pre-existing vector
      */
     public Vector3f getColorExtinction() {
         return colorExtinction;
@@ -778,7 +778,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
      * the first value is for red
      * the second is for green
      * the third is for blue
-     * Play with thos parameters to "trouble" the water
+     * Play with those parameters to "trouble" the water
      * default is (5.0, 20.0, 30.0f);
      * @param colorExtinction
      */
@@ -857,14 +857,14 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * return the shininess factor of the water
-     * @return
+     * @return the shininess factor
      */
     public float getShininess() {
         return shininess;
     }
 
     /**
-     * Sets the shinines factor of the water
+     * Sets the shininess factor of the water
      * default is 0.7f
      * @param shininess
      */
@@ -876,8 +876,8 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
     }
 
     /**
-     * retruns the speed of the waves
-     * @return
+     * returns the speed of the waves
+     * @return the speed value
      */
     public float getSpeed() {
         return speed;
@@ -894,7 +894,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
     /**
      * returns the color of the water
      *
-     * @return
+     * @return the pre-existing instance
      */
     public ColorRGBA getWaterColor() {
         return waterColor;
@@ -915,7 +915,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * returns the deep water color
-     * @return
+     * @return the pre-existing instance
      */
     public ColorRGBA getDeepWaterColor() {
         return deepWaterColor;
@@ -936,7 +936,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * returns the wind direction
-     * @return
+     * @return the pre-existing direction vector
      */
     public Vector2f getWindDirection() {
         return windDirection;
@@ -957,7 +957,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * returns the size of the reflection map
-     * @return
+     * @return the size (in pixels)
      */
     public int getReflectionMapSize() {
         return reflectionMapSize;
@@ -1119,7 +1119,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * returns the foam intensity
-     * @return 
+     * @return the intensity value
      */
     public float getFoamIntensity() {
         return foamIntensity;
@@ -1140,7 +1140,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
     /**
      * returns the reflection displace
      * see {@link #setReflectionDisplace(float) }
-     * @return 
+     * @return the displacement value
      */
     public float getReflectionDisplace() {
         return reflectionDisplace;
@@ -1167,7 +1167,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * returns the distance of the fog when under water
-     * @return 
+     * @return the distance
      */
     public float getUnderWaterFogDistance() {
         return underWaterFogDistance;
@@ -1187,7 +1187,7 @@ public class WaterFilter extends Filter implements JmeCloneable, Cloneable {
 
     /**
      * get the intensity of caustics under water
-     * @return 
+     * @return the intensity value (&ge;0, &le;1)
      */
     public float getCausticsIntensity() {
         return causticsIntensity;

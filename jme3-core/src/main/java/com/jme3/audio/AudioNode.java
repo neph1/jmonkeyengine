@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012, 2016 jMonkeyEngine
+ * Copyright (c) 2009-2012, 2016, 2018-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -221,7 +221,7 @@ public class AudioNode extends Node implements AudioSource {
     /**
      * Start playing an instance of this audio. This method can be used
      * to play the same <code>AudioNode</code> multiple times. Note
-     * that changes to the parameters of this AudioNode will not effect the
+     * that changes to the parameters of this AudioNode will not affect the
      * instances already playing.
      */
     public void playInstance(){
@@ -278,8 +278,8 @@ public class AudioNode extends Node implements AudioSource {
      * the dry filter will only influence the "dry" portion of the audio,
      * e.g. not the reverberated parts of the AudioNode playing.
      *
-     * See the relevent documentation for the {@link Filter} to determine
-     * the effect.
+     * See the relevant documentation for the {@link Filter} to determine the
+     * effect.
      *
      * @param dryFilter The filter to set, or null to disable dry filter.
      */
@@ -299,7 +299,7 @@ public class AudioNode extends Node implements AudioSource {
      */
     public void setAudioData(AudioData audioData, AudioKey audioKey) {
         if (data != null) {
-            throw new IllegalStateException("Cannot change data once its set");
+            throw new IllegalStateException("Cannot change data once it's set");
         }
 
         data = audioData;
@@ -490,7 +490,7 @@ public class AudioNode extends Node implements AudioSource {
     /**
      * Set to true to enable reverberation effects for this audio node.
      * Does nothing if the audio node is not positional.
-     * <br/>
+     * <br>
      * When enabled, the audio environment set with
      * {@link AudioRenderer#setEnvironment(com.jme3.audio.Environment) }
      * will apply a reverb effect to the audio playing from this audio node.
@@ -692,7 +692,7 @@ public class AudioNode extends Node implements AudioSource {
 
     /**
      * Set the audio node as positional.
-     * The position, velocity, and distance parameters effect positional
+     * The position, velocity, and distance parameters affect positional
      * audio nodes. Set to false if the audio node should play in "headspace".
      *
      * @param positional True if the audio node should be positional, otherwise
@@ -722,25 +722,14 @@ public class AudioNode extends Node implements AudioSource {
     @Override
     public void updateGeometricState() {
         super.updateGeometricState();
-
-        if (channel < 0) {
-            return;
-        }
-
+        if (channel < 0) return;
         Vector3f currentWorldTranslation = worldTransform.getTranslation();
-
-        if (Float.isNaN(previousWorldTranslation.x)
-                || !previousWorldTranslation.equals(currentWorldTranslation)) {
-
+        if (!previousWorldTranslation.equals(currentWorldTranslation)) {
             getRenderer().updateSourceParam(this, AudioParam.Position);
-
-            if (velocityFromTranslation) {
-                velocity.set(currentWorldTranslation).subtractLocal(previousWorldTranslation);
-                velocity.multLocal(1f / lastTpf);
-
+            if (velocityFromTranslation && !Float.isNaN(previousWorldTranslation.x)) {
+                velocity.set(currentWorldTranslation).subtractLocal(previousWorldTranslation).multLocal(1f / lastTpf);
                 getRenderer().updateSourceParam(this, AudioParam.Velocity);
             }
-
             previousWorldTranslation.set(currentWorldTranslation);
         }
     }
@@ -748,10 +737,6 @@ public class AudioNode extends Node implements AudioSource {
     @Override
     public AudioNode clone(){
         AudioNode clone = (AudioNode) super.clone();
-
-        clone.direction = direction.clone();
-        clone.velocity  = velocity.clone();
-
         return clone;
     }
 
@@ -760,10 +745,11 @@ public class AudioNode extends Node implements AudioSource {
      */
     @Override
     public void cloneFields( Cloner cloner, Object original ) {
-        super.cloneFields(cloner, original);
+        super.cloneFields(cloner, original); 
 
-        this.direction = cloner.clone(direction);
-        this.velocity = cloner.clone(velocity);
+        this.direction=cloner.clone(direction);
+        this.velocity=velocityFromTranslation?new Vector3f():cloner.clone(velocity);      
+        this.previousWorldTranslation=Vector3f.NAN.clone();
 
         // Change in behavior: the filters were not cloned before meaning
         // that two cloned audio nodes would share the same filter instance.

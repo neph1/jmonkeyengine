@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.shader.BufferObject;
 import com.jme3.shader.Shader;
 import com.jme3.shader.Shader.ShaderSource;
 import com.jme3.system.AppSettings;
@@ -222,7 +223,7 @@ public interface Renderer {
     /**
      * Reads the pixels currently stored in the specified framebuffer
      * into the given ByteBuffer object. 
-     * Only color pixels are transferred, witht hte given format. 
+     * Only color pixels are transferred, with the given format. 
      * The given byte buffer should have at least
      * fb.getWidth() * fb.getHeight() * 4 bytes remaining.
      * 
@@ -268,10 +269,24 @@ public interface Renderer {
     public void updateBufferData(VertexBuffer vb);
 
     /**
+     * Uploads data of the buffer object on the GPU.
+     *
+     * @param bo the buffer object to upload.
+     */
+    public void updateBufferData(BufferObject bo);
+
+    /**
      * Deletes a vertex buffer from the GPU.
      * @param vb The vertex buffer to delete
      */
     public void deleteBuffer(VertexBuffer vb);
+
+    /**
+     * Deletes the buffer object from the GPU.
+     *
+     * @param bo the buffer object to delete.
+     */
+    public void deleteBuffer(BufferObject bo);
 
     /**
      * Renders <code>count</code> meshes, with the geometry data supplied and
@@ -366,14 +381,14 @@ public interface Renderer {
       * set shall undergo an sRGB to linear RGB color conversion when read by a shader.
       *
       * The conversion is performed for the following formats:
-      *  - {@link Image.Format#RGB8}
-      *  - {@link Image.Format#RGBA8}
-      *  - {@link Image.Format#Luminance8}
-      *  - {@link Image.Format#Luminance8Alpha8}
-      *  - {@link Image.Format#DXT1}
-      *  - {@link Image.Format#DXT1A}
-      *  - {@link Image.Format#DXT3}
-      *  - {@link Image.Format#DXT5}
+      *  - {@link com.jme3.texture.Image.Format#RGB8}
+      *  - {@link com.jme3.texture.Image.Format#RGBA8}
+      *  - {@link com.jme3.texture.Image.Format#Luminance8}
+      *  - {@link com.jme3.texture.Image.Format#Luminance8Alpha8}
+      *  - {@link com.jme3.texture.Image.Format#DXT1}
+      *  - {@link com.jme3.texture.Image.Format#DXT1A}
+      *  - {@link com.jme3.texture.Image.Format#DXT3}
+      *  - {@link com.jme3.texture.Image.Format#DXT5}
       * 
       * For all other formats, no conversion is performed.
       *
@@ -425,8 +440,21 @@ public interface Renderer {
      * Check if the profiling results are available
      *
      * @param taskId the id of the task provided by startProfiling
-     * @return true if the resulst of the task with the given task id are available.
+     * @return true if the results of the task with the given task id are available.
      */
     public boolean isTaskResultAvailable(int taskId);
+    
+    
+    /**
+     * Gets the alpha to coverage state.
+     * 
+     */
+    public boolean getAlphaToCoverage(); 
+    
+    /**
+     * Get the default anisotropic filter level for textures.
+     *
+     */
+    public int getDefaultAnisotropicFilter();
 
 }

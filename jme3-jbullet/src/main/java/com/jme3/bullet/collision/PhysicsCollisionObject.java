@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ public abstract class PhysicsCollisionObject implements Savable {
 
     /**
      * Returns the collision group for this collision shape
-     * @return
+     * @return a bitmask with 1 bit set
      */
     public int getCollisionGroup() {
         return collisionGroup;
@@ -93,7 +93,7 @@ public abstract class PhysicsCollisionObject implements Savable {
      * Sets the collision group number for this physics object. <br>
      * The groups are integer bit masks and some pre-made variables are available in CollisionObject.
      * All physics objects are by default in COLLISION_GROUP_01.<br>
-     * Two object will collide when <b>one</b> of the partys has the
+     * Two object will collide when <b>one</b> of the parties has the
      * collisionGroup of the other in its collideWithGroups set.
      * @param collisionGroup the collisionGroup to set
      */
@@ -103,7 +103,7 @@ public abstract class PhysicsCollisionObject implements Savable {
 
     /**
      * Add a group that this object will collide with.<br>
-     * Two object will collide when <b>one</b> of the partys has the
+     * Two object will collide when <b>one</b> of the parties has the
      * collisionGroup of the other in its collideWithGroups set.<br>
      * @param collisionGroup
      */
@@ -129,7 +129,7 @@ public abstract class PhysicsCollisionObject implements Savable {
 
     /**
      * Gets the bitmask of collision groups that this object collides with.
-     * @return
+     * @return a bitmask
      */
     public int getCollideWithGroups() {
         return collisionGroupsMask;

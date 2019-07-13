@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2015 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,14 +38,9 @@ import com.jme3.environment.util.EnvMapUtils;
 import com.jme3.light.LightProbe;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.*;
 import com.jme3.scene.Spatial;
-import com.jme3.texture.FrameBuffer;
-import com.jme3.texture.Image;
-import com.jme3.texture.Texture2D;
-import com.jme3.texture.TextureCubeMap;
+import com.jme3.texture.*;
 import com.jme3.texture.image.ColorSpace;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.MipMapGenerator;
@@ -119,7 +114,7 @@ public class EnvironmentCamera extends BaseAppState {
     private final List<SnapshotJob> jobs = new ArrayList<SnapshotJob>();
 
     /**
-     * Creates an EnvironmentCamera with a size of 128
+     * Creates an EnvironmentCamera with a size of 256
      */
     public EnvironmentCamera() {
     }
@@ -294,7 +289,7 @@ public class EnvironmentCamera extends BaseAppState {
     /**
      * returns the images format used for the generated maps.
      *
-     * @return
+     * @return the enum value
      */
     public Image.Format getImageFormat() {
         return imageFormat;
@@ -316,13 +311,13 @@ public class EnvironmentCamera extends BaseAppState {
      * @param axisX the x axis
      * @param axisY the y axis
      * @param axisZ tha z axis
-     * @return
+     * @return a new instance
      */
     protected Camera createOffCamera(final int mapSize, final Vector3f worldPos, final Vector3f axisX, final Vector3f axisY, final Vector3f axisZ) {
         final Camera offCamera = new Camera(mapSize, mapSize);
         offCamera.setLocation(worldPos);
         offCamera.setAxes(axisX, axisY, axisZ);
-        offCamera.setFrustumPerspective(90f, 1f, 1, 1000);
+        offCamera.setFrustumPerspective(90f, 1f, 0.1f, 1000);
         offCamera.setLocation(position);
         return offCamera;
     }
@@ -332,7 +327,7 @@ public class EnvironmentCamera extends BaseAppState {
      *
      * @param name
      * @param offCamera
-     * @return
+     * @return a new instance
      */
     protected ViewPort createOffViewPort(final String name, final Camera offCamera) {
         final ViewPort offView = new ViewPort(name, offCamera);
@@ -346,7 +341,7 @@ public class EnvironmentCamera extends BaseAppState {
      *
      * @param mapSize
      * @param offView
-     * @return
+     * @return a new instance
      */
     protected FrameBuffer createOffScreenFrameBuffer(int mapSize, ViewPort offView) {
         // create offscreen framebuffer

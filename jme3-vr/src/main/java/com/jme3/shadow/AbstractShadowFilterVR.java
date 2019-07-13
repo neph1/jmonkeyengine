@@ -1,7 +1,7 @@
 package com.jme3.shadow;
 
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,8 +69,6 @@ public abstract class AbstractShadowFilterVR<T extends AbstractShadowRendererVR>
      * @param manager the application asset manager
      * @param shadowMapSize the size of the rendered shadowmaps (512,1024,2048,
      * etc...)
-     * @param nbShadowMaps the number of shadow maps rendered (the more shadow
-     * maps the more quality, the less fps).
      * @param shadowRenderer the shadowRenderer to use for this Filter
      */
     @SuppressWarnings("all")
@@ -186,7 +184,7 @@ public abstract class AbstractShadowFilterVR<T extends AbstractShadowRendererVR>
     }
 
     /**
-     * returns the shdaow intensity
+     * returns the shadow intensity
      *
      * @see #setShadowIntensity(float shadowIntensity)
      * @return shadowIntensity
@@ -309,7 +307,7 @@ public abstract class AbstractShadowFilterVR<T extends AbstractShadowRendererVR>
 
 
     /**
-     * Get the the edge filtering mode.
+     * Get the edge filtering mode.
      * @return the edge filtering mode.
      */
     public EdgeFilteringMode getEdgeFilteringMode() {

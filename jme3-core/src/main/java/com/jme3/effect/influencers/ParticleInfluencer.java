@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2018 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,9 +53,6 @@ public interface ParticleInfluencer extends Savable, Cloneable, JmeCloneable {
      */
     void influenceParticle(Particle particle, EmitterShape emitterShape);
 
-    void influenceRealtime(Particle particle, float tpf);
-    
-    public void update(float tpf);
     /**
      * This method clones the influencer instance.
      * @return cloned instance
@@ -67,7 +64,7 @@ public interface ParticleInfluencer extends Savable, Cloneable, JmeCloneable {
      *        Set the initial velocity a particle is spawned with,
      *        the initial velocity given in the parameter will be varied according
      *        to the velocity variation set in {@link ParticleEmitter#setVelocityVariation(float) }.
-     *        A particle will move toward its velocity unless it is effected by the
+     *        The particle will move with this velocity unless it is affected by
      *        gravity.
      */
     void setInitialVelocity(Vector3f initialVelocity);

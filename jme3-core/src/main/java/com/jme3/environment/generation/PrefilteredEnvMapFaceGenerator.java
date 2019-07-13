@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2015 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,8 +45,8 @@ import static com.jme3.math.FastMath.abs;
 import static com.jme3.math.FastMath.sqrt;
 
 /**
- * Generates one face of the prefiltered environnement map for PBR. This job can
- * be lauched from a separate thread.
+ * Generates one face of the prefiltered environment map for PBR. This job can
+ * be launched from a separate thread.
  * <p>
  * TODO there is a lot of duplicate code here with the EnvMapUtils.
  *
@@ -91,13 +91,14 @@ public class PrefilteredEnvMapFaceGenerator extends RunnableWithProgress {
 
 
     /**
-     * Fills all the genration parameters
+     * Fills all the generation parameters
      *
      * @param sourceMap      the source cube map
      * @param targetMapSize  the size of the generated map (width or height in
      *                       pixel)
-     * @param fixSeamsMethod the method used to fix seams as described here
-     *                       {@link EnvMapUtils.FixSeamsMethod}
+     * @param fixSeamsMethod the method used to fix seams as described in
+     *                       {@link com.jme3.environment.util.EnvMapUtils.FixSeamsMethod}
+     * @param genType
      * @param store          The cube map to store the result in.
      */
     public void setGenerationParam(TextureCubeMap sourceMap, int targetMapSize, EnvMapUtils.FixSeamsMethod fixSeamsMethod, EnvMapUtils.GenerationType genType, TextureCubeMap store) {
@@ -331,8 +332,8 @@ public class PrefilteredEnvMapFaceGenerator extends RunnableWithProgress {
      *
      * @param xi
      * @param a2
-     * @param store
-     * @return
+     * @param store caller-provided storage
+     * @return either store or a new vector (not null)
      */
     public Vector3f importanceSampleGGX(Vector4f xi, float a2, Vector3f store) {
         if (store == null) {

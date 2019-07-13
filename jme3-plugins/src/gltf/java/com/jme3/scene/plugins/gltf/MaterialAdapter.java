@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * A MaterialAdapter allows to map a GLTF material to a JME material.
- * It maps each gltf parameter to it's matching parameter in the JME material,
+ * It maps each gltf parameter to its matching parameter in the JME material,
  * and allows for some conversion if the JME material model doesn't exactly match the gltf material model
  * Created by Nehon on 08/08/2017.
  */
@@ -26,7 +26,7 @@ public abstract class MaterialAdapter {
     /**
      * Should return the material definition used by this material adapter
      *
-     * @return
+     * @return path to the material definition
      */
     protected abstract String getMaterialDefPath();
 

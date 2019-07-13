@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,17 +39,13 @@ import com.jme3.light.LightList;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.material.TechniqueDef.LightMode;
-import com.jme3.material.TechniqueDef.ShadowMode;
 import com.jme3.math.*;
 import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.Renderer;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
-import com.jme3.shader.Shader;
-import com.jme3.shader.Uniform;
-import com.jme3.shader.UniformBindingManager;
-import com.jme3.shader.VarType;
+import com.jme3.shader.*;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.image.ColorSpace;
@@ -364,7 +360,7 @@ public class Material implements CloneableSmartAsset, Cloneable, Savable {
      * <p>This value is merely a marker, by itself it does nothing.
      * Generally model loaders will use this marker to indicate
      * the material should receive shadows and therefore any
-     * geometries using it should have the {@link ShadowMode#Receive} set
+     * geometries using it should have {@link com.jme3.renderer.queue.RenderQueue.ShadowMode#Receive} set
      * on them.
      *
      * @param receivesShadows if the material should receive shadows or not.
@@ -410,6 +406,17 @@ public class Material implements CloneableSmartAsset, Cloneable, Savable {
      */
     public MatParam getParam(String name) {
         return paramValues.get(name);
+    }
+
+    /**
+     * Returns the current parameter's value.
+     *
+     * @param name the parameter name to look up.
+     * @return current value or null if the parameter wasn't set.
+     */
+    public <T> T getParamValue(final String name) {
+        final MatParam param = paramValues.get(name);
+        return param == null ? null : (T) param.getValue();
     }
 
     /**
@@ -661,6 +668,28 @@ public class Material implements CloneableSmartAsset, Cloneable, Savable {
     }
 
     /**
+     * Pass an uniform buffer object to the material shader.
+     *
+     * @param name  the name of the buffer object defined in the material definition (j3md).
+     * @param value the buffer object.
+     */
+    public void setUniformBufferObject(final String name, final BufferObject value) {
+        value.setBufferType(BufferObject.BufferType.UniformBufferObject);
+        setParam(name, VarType.BufferObject, value);
+    }
+
+    /**
+     * Pass a shader storage buffer object to the material shader.
+     *
+     * @param name  the name of the buffer object defined in the material definition (j3md).
+     * @param value the buffer object.
+     */
+    public void setShaderStorageBufferObject(final String name, final BufferObject value) {
+        value.setBufferType(BufferObject.BufferType.ShaderStorageBufferObject);
+        setParam(name, VarType.BufferObject, value);
+    }
+
+    /**
      * Pass a Vector2f to the material shader.
      *
      * @param name the name of the Vector2f defined in the material definition (j3md)
@@ -794,25 +823,44 @@ public class Material implements CloneableSmartAsset, Cloneable, Savable {
         }
 
         for (int i = 0; i < paramValues.size(); i++) {
+
             MatParam param = paramValues.getValue(i);
             VarType type = param.getVarType();
-            Uniform uniform = shader.getUniform(param.getPrefixedName());
 
-            if (uniform.isSetByCurrentMaterial()) {
-                continue;
-            }
+            if (isBO(type)) {
 
-            if (type.isTextureType()) {
-                renderer.setTexture(unit, (Texture) param.getValue());
-                uniform.setValue(VarType.Int, unit);
-                unit++;
+                final ShaderBufferBlock bufferBlock = shader.getBufferBlock(param.getPrefixedName());
+                bufferBlock.setBufferObject((BufferObject) param.getValue());
+
             } else {
-                uniform.setValue(type, param.getValue());
+
+                Uniform uniform = shader.getUniform(param.getPrefixedName());
+                if (uniform.isSetByCurrentMaterial()) {
+                    continue;
+                }
+
+                if (type.isTextureType()) {
+                    renderer.setTexture(unit, (Texture) param.getValue());
+                    uniform.setValue(VarType.Int, unit);
+                    unit++;
+                } else {
+                    uniform.setValue(type, param.getValue());
+                }
             }
         }
 
         //TODO HACKY HACK remove this when texture unit is handled by the uniform.
         return unit;
+    }
+
+    /**
+     * Returns true if the type is Buffer Object's type.
+     *
+     * @param type the material parameter type.
+     * @return true if the type is Buffer Object's type.
+     */
+    private boolean isBO(final VarType type) {
+        return type == VarType.BufferObject;
     }
 
     private void updateRenderState(RenderManager renderManager, Renderer renderer, TechniqueDef techniqueDef) {
@@ -836,7 +884,7 @@ public class Material implements CloneableSmartAsset, Cloneable, Savable {
      *
      * @param renderManager The render manager to preload for
      */
-    public void preload(RenderManager renderManager) {
+    public void preload(RenderManager renderManager, Geometry geometry) {
         if (technique == null) {
             selectTechnique(TechniqueDef.DEFAULT_TECHNIQUE_NAME, renderManager);
         }
@@ -847,9 +895,11 @@ public class Material implements CloneableSmartAsset, Cloneable, Savable {
         if (techniqueDef.isNoRender()) {
             return;
         }
+        // Get world overrides
+        SafeArrayList<MatParamOverride> overrides = geometry.getWorldMatParamOverrides();
 
-        Shader shader = technique.makeCurrent(renderManager, null, null, null, rendererCaps);
-        updateShaderMaterialParameters(renderer, shader, null, null);
+        Shader shader = technique.makeCurrent(renderManager, overrides, null, null, rendererCaps);
+        updateShaderMaterialParameters(renderer, shader, overrides, null);
         renderManager.getRenderer().setShader(shader);
     }
 
@@ -891,7 +941,7 @@ public class Material implements CloneableSmartAsset, Cloneable, Savable {
      * or the first default technique that the renderer supports
      * (based on the technique's {@link TechniqueDef#getRequiredCaps() requested rendering capabilities})<ul>
      * <li>If the technique has been changed since the last frame, then it is notified via
-     * {@link Technique#makeCurrent(com.jme3.asset.AssetManager, boolean, java.util.EnumSet)
+     * {@link Technique#makeCurrent(com.jme3.renderer.RenderManager, com.jme3.util.SafeArrayList, com.jme3.util.SafeArrayList, com.jme3.light.LightList, java.util.EnumSet)
      * Technique.makeCurrent()}.
      * If the technique wants to use a shader to render the model, it should load it at this part -
      * the shader should have all the proper defines as declared in the technique definition,
@@ -907,7 +957,7 @@ public class Material implements CloneableSmartAsset, Cloneable, Savable {
      * <li>{@link RenderManager#getForcedRenderState() RenderManager's Forced RenderState}
      * - i.e. renderstate requested by a {@link com.jme3.post.SceneProcessor} or
      * post-processing filter.</li></ol>
-     * <li>If the technique {@link TechniqueDef#isUsingShaders() uses a shader}, then the uniforms of the shader must be updated.<ul>
+     * <li>If the technique uses a shader, then the uniforms of the shader must be updated.<ul>
      * <li>Uniforms bound to material parameters are updated based on the current material parameter values.</li>
      * <li>Uniforms bound to world parameters are updated from the RenderManager.
      * Internally {@link UniformBindingManager} is used for this task.</li>
@@ -922,8 +972,8 @@ public class Material implements CloneableSmartAsset, Cloneable, Savable {
      * rendered with {@link BlendMode#AlphaAdditive alpha-additive} blending and depth writing disabled.</li>
      * </ul>
      * <li>For techniques that do not use shaders,
-     * fixed function OpenGL is used to render the model (see {@link GL1Renderer} interface):<ul>
-     * <li>OpenGL state ({@link FixedFuncBinding}) that is bound to material parameters is updated. </li>
+     * fixed function OpenGL is used to render the model (see {@link com.jme3.renderer.opengl.GLRenderer} interface):<ul>
+     * <li>OpenGL state that is bound to material parameters is updated. </li>
      * <li>The texture set on the material is uploaded and bound.
      * Currently only 1 texture is supported for fixed function techniques.</li>
      * <li>If the technique uses lighting, then OpenGL lighting state is updated

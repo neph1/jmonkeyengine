@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2018 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.clone.Cloner;
-import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +49,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * This emiter shape emits the particles from the given shape's vertices
+ * This emitter shape emits the particles from the given shape's vertices
  * @author Marcin Roguski (Kaelthas)
  */
 public class EmitterMeshVertexShape implements EmitterShape {
@@ -74,7 +73,7 @@ public class EmitterMeshVertexShape implements EmitterShape {
     }
 
     /**
-     * This method sets the meshes that will form the emiter's shape.
+     * This method sets the meshes that will form the emitter's shape.
      * @param meshes
      *        a list of meshes that will form the emitter's shape
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,7 @@ import java.util.logging.Logger;
  * 
  * @author Mark Powell
  * @author Joshua Slack
+ * @author Ian McClean
  */
 public class Plane implements Savable, Cloneable, java.io.Serializable {
 
@@ -90,6 +91,16 @@ public class Plane implements Savable, Cloneable, java.io.Serializable {
 
         this.normal.set(normal);
         this.constant = constant;
+    }
+
+    /**
+     * Constructor instantiates a new <code>Plane</code> object.
+     *
+     * @param normal      The normal of the plane.
+     * @param displacement A vector representing a point on the plane.
+     */
+    public Plane(Vector3f normal, Vector3f displacement) {
+        this(normal, displacement.dot(normal));
     }
 
     /**
@@ -244,7 +255,7 @@ public class Plane implements Savable, Cloneable, java.io.Serializable {
     }
 
     /**
-     * <code>toString</code> returns a string thta represents the string
+     * <code>toString</code> returns a string that represents the string
      * representation of this plane. It represents the normal as a
      * <code>Vector3f</code> object, so the format is the following:
      * com.jme.math.Plane [Normal: org.jme.math.Vector3f [X=XX.XXXX, Y=YY.YYYY,

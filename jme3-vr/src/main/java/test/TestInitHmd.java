@@ -36,7 +36,7 @@ import com.jme3.input.vr.openvr.OpenVR;
 import com.jme3.system.AppSettings;
 
 /**
- *
+ * Testing OpenVR environment.
  * @author Rickard <neph1 @ github>
  */
 public class TestInitHmd {

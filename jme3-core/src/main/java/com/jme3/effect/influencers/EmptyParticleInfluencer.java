@@ -37,7 +37,6 @@ import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
 import com.jme3.util.clone.Cloner;
-import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
 
 /**
@@ -103,15 +102,5 @@ public class EmptyParticleInfluencer implements ParticleInfluencer {
      */
     @Override
     public void cloneFields( Cloner cloner, Object original ) {
-    }
-
-    @Override
-    public void influenceRealtime(Particle particle, float tpf) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void update(float tpf) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

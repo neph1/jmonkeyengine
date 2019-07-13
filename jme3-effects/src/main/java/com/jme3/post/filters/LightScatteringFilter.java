@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,8 +47,8 @@ import com.jme3.renderer.queue.RenderQueue;
 import java.io.IOException;
 
 /**
- * LightScattering filters creates rays comming from a light sources 
- * This is often reffered as god rays.
+ * LightScattering filters create rays coming from light sources 
+ * This is often referred to as god rays.
  *
  * @author Rémy Bouquet aka Nehon
  */
@@ -67,7 +67,7 @@ public class LightScatteringFilter extends Filter {
     private ViewPort viewPort;
 
     /**
-     * creates a lightScaterring filter
+     * creates a lightScattering filter
      */
     public LightScatteringFilter() {
         super("Light Scattering");
@@ -133,7 +133,7 @@ public class LightScatteringFilter extends Filter {
     /**
      * returns the blur start of the scattering 
      * see {@link #setBlurStart(float blurStart)}
-     * @return 
+     * @return the start distance
      */
     public float getBlurStart() {
         return blurStart;
@@ -151,7 +151,7 @@ public class LightScatteringFilter extends Filter {
     /**
      * returns the blur width<br>
      * see {@link #setBlurWidth(float blurWidth)}
-     * @return 
+     * @return the width
      */
     public float getBlurWidth() {
         return blurWidth;
@@ -169,7 +169,7 @@ public class LightScatteringFilter extends Filter {
      * returns the light density
      * see {@link #setLightDensity(float lightDensity)}
      * 
-     * @return 
+     * @return the density
      */
     public float getLightDensity() {
         return lightDensity;
@@ -185,7 +185,7 @@ public class LightScatteringFilter extends Filter {
 
     /**
      * returns the light position
-     * @return 
+     * @return the pre-existing vector
      */
     public Vector3f getLightPosition() {
         return lightPosition;
@@ -200,8 +200,8 @@ public class LightScatteringFilter extends Filter {
     }
 
     /**
-     * returns the nmber of samples for the radial blur
-     * @return 
+     * returns the number of samples for the radial blur
+     * @return count (&ge;0)
      */
     public int getNbSamples() {
         return nbSamples;
@@ -209,7 +209,7 @@ public class LightScatteringFilter extends Filter {
 
     /**
      * sets the number of samples for the radial blur default is 50
-     * the higher the value the higher the quality, but the slower the performances.
+     * the higher the value the higher the quality, but the slower the performance.
      * @param nbSamples 
      */
     public void setNbSamples(int nbSamples) {

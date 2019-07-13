@@ -70,6 +70,35 @@ public class OpenVR implements VRAPI {
     private VREnvironment environment = null;
     
     /**
+     * Convert specific OpenVR {@link com.jme3.system.jopenvr.HmdMatrix34_t HmdMatrix34_t} into JME {@link Matrix4f Matrix4f}
+     * @param hmdMatrix the input matrix
+     * @param mat the converted matrix
+     * @return the converted matrix
+     */
+    public static Matrix4f convertSteamVRMatrix3ToMatrix4f(com.jme3.system.jopenvr.HmdMatrix34_t hmdMatrix, Matrix4f mat){
+        mat.set(hmdMatrix.m[0], hmdMatrix.m[1], hmdMatrix.m[2], hmdMatrix.m[3], 
+                hmdMatrix.m[4], hmdMatrix.m[5], hmdMatrix.m[6], hmdMatrix.m[7], 
+                hmdMatrix.m[8], hmdMatrix.m[9], hmdMatrix.m[10], hmdMatrix.m[11], 
+                0f, 0f, 0f, 1f);
+        return mat;
+    }
+    
+    /**
+     * Convert specific OpenVR {@link com.jme3.system.jopenvr.HmdMatrix44_t HmdMatrix34_t} into JME {@link Matrix4f Matrix4f}
+     * @param hmdMatrix the input matrix
+     * @param mat the converted matrix
+     * @return the converted matrix
+     */
+    public static Matrix4f convertSteamVRMatrix4ToMatrix4f(com.jme3.system.jopenvr.HmdMatrix44_t hmdMatrix, Matrix4f mat){
+        mat.set(hmdMatrix.m[0], hmdMatrix.m[1], hmdMatrix.m[2], hmdMatrix.m[3], 
+                hmdMatrix.m[4], hmdMatrix.m[5], hmdMatrix.m[6], hmdMatrix.m[7],
+                hmdMatrix.m[8], hmdMatrix.m[9], hmdMatrix.m[10], hmdMatrix.m[11], 
+                hmdMatrix.m[12], hmdMatrix.m[13], hmdMatrix.m[14], hmdMatrix.m[15]);
+        return mat;
+    }
+    
+    
+    /**
      * Create a new <a href="https://github.com/ValveSoftware/openvr/wiki/API-Documentation">OpenVR</a> system 
      * attached to the given {@link VREnvironment VR environment}.
      * @param environment the VR environment to which this API is attached.
@@ -275,9 +304,11 @@ public class OpenVR implements VRAPI {
         environment.getVRinput().updateControllerStates();
                 
         // read pose data from native
-        for (int nDevice = 0; nDevice < VR.k_unMaxTrackedDeviceCount; ++nDevice ){
-            if( hmdTrackedDevicePoses[nDevice].bPoseIsValid() ){
-                VRUtil.convertSteamVRMatrix3ToMatrix4f(hmdTrackedDevicePoses[nDevice].mDeviceToAbsoluteTracking(), poseMatrices[nDevice]);
+        for (int nDevice = 0; nDevice < JOpenVRLibrary.k_unMaxTrackedDeviceCount; ++nDevice ){
+            hmdTrackedDevicePoses[nDevice].readField("bPoseIsValid");
+            if( hmdTrackedDevicePoses[nDevice].bPoseIsValid != 0 ){
+                hmdTrackedDevicePoses[nDevice].readField("mDeviceToAbsoluteTracking");
+                convertSteamVRMatrix3ToMatrix4f(hmdTrackedDevicePoses[nDevice].mDeviceToAbsoluteTracking, poseMatrices[nDevice]);
             }            
         }
         
@@ -296,7 +327,7 @@ public class OpenVR implements VRAPI {
             HmdMatrix44 mat = HmdMatrix44.create();
             mat = VRSystem.VRSystem_GetProjectionMatrix(VR.EVREye_Eye_Left, cam.getFrustumNear(), cam.getFrustumFar(), mat);
             hmdProjectionLeftEye = new Matrix4f();
-            VRUtil.convertSteamVRMatrix4ToMatrix4f(mat, hmdProjectionLeftEye);
+            convertSteamVRMatrix4ToMatrix4f(mat, hmdProjectionLeftEye);
             return hmdProjectionLeftEye;
         }
     }
@@ -309,7 +340,7 @@ public class OpenVR implements VRAPI {
             HmdMatrix44 mat = HmdMatrix44.create();
             mat = VRSystem.VRSystem_GetProjectionMatrix(VR.EVREye_Eye_Right, cam.getFrustumNear(), cam.getFrustumFar(), mat);
             hmdProjectionRightEye = new Matrix4f();
-            VRUtil.convertSteamVRMatrix4ToMatrix4f(mat, hmdProjectionRightEye);
+            convertSteamVRMatrix4ToMatrix4f(mat, hmdProjectionRightEye);
             return hmdProjectionRightEye;
         }
     }
@@ -349,7 +380,7 @@ public class OpenVR implements VRAPI {
             HmdMatrix34 mat = HmdMatrix34.create();
             VRSystem.VRSystem_GetSeatedZeroPoseToStandingAbsoluteTrackingPose(mat);
             Matrix4f tempmat = new Matrix4f();
-            VRUtil.convertSteamVRMatrix3ToMatrix4f(mat, tempmat);
+            convertSteamVRMatrix3ToMatrix4f(mat, tempmat);
             tempmat.toTranslationVector(hmdSeatToStand);
         }
         return hmdSeatToStand;
@@ -363,7 +394,7 @@ public class OpenVR implements VRAPI {
             HmdMatrix34 mat = HmdMatrix34.create();
             VRSystem.VRSystem_GetEyeToHeadTransform(VR.EVREye_Eye_Left, mat);
             hmdPoseLeftEye = new Matrix4f();
-            return VRUtil.convertSteamVRMatrix3ToMatrix4f(mat, hmdPoseLeftEye);
+            return convertSteamVRMatrix3ToMatrix4f(mat, hmdPoseLeftEye);
         }
     }
     
@@ -421,7 +452,9 @@ public class OpenVR implements VRAPI {
         if( isSeated) {    
             VRCompositor.VRCompositor_SetTrackingSpace(VR.ETrackingUniverseOrigin_TrackingUniverseSeated);
         } else {
-            VRCompositor.VRCompositor_SetTrackingSpace(VR.ETrackingUniverseOrigin_TrackingUniverseStanding);
+            HmdMatrix34_t mat = vrsystemFunctions.GetEyeToHeadTransform.apply(JOpenVRLibrary.EVREye.EVREye_Eye_Right);
+            hmdPoseRightEye = new Matrix4f();
+            return convertSteamVRMatrix3ToMatrix4f(mat, hmdPoseRightEye);
         }
     }
     

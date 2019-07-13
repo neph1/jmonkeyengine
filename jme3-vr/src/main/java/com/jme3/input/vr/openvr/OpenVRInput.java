@@ -308,9 +308,7 @@ public class OpenVRInput implements VRInputAPI {
     @Override
     public boolean isInputFocused() {
     	if (environment != null){
-            // not a 100% match, but the closest i can find in lwjgl. Doc seems to confirm this too.
-            return VRSystem.VRSystem_IsInputAvailable();
-            //return ((VR_IVRSystem_FnTable)environment.getVRHardware().getVRSystem()).IsInputFocusCapturedByAnotherProcess.apply() == 0;
+    		return ((VR_IVRSystem_FnTable)environment.getVRHardware().getVRSystem()).IsInputAvailable.apply() == 0;
     	} else {
     		throw new IllegalStateException("VR input is not attached to a VR environment.");
     	}      
@@ -447,42 +445,43 @@ public class OpenVRInput implements VRInputAPI {
 
     @Override
     public void updateConnectedControllers() {
-        logger.config("Updating connected controllers.");
-
-        if (environment != null) {
-            controllerCount = 0;
-            for (int i = 0; i < VR.k_unMaxTrackedDeviceCount; i++) {
-                int classCallback = VRSystem.VRSystem_GetTrackedDeviceClass(i);
-                if (classCallback == VR.ETrackedDeviceClass_TrackedDeviceClass_Controller || classCallback == VR.ETrackedDeviceClass_TrackedDeviceClass_GenericTracker) {
-                    IntBuffer error = BufferUtils.createIntBuffer(1);
-                    String controllerName = "Unknown";
-                    String manufacturerName = "Unknown";
-                    controllerName = VRSystem.VRSystem_GetStringTrackedDeviceProperty(i, VR.ETrackedDeviceProperty_Prop_TrackingSystemName_String, error);
-                    manufacturerName = VRSystem.VRSystem_GetStringTrackedDeviceProperty(i, VR.ETrackedDeviceProperty_Prop_ManufacturerName_String, error);
-
-                    if (error.get(0) != 0) {
-                        logger.warning("Error getting controller information " + controllerName + " " + manufacturerName + "Code (" + error.get(0) + ")");
-                    }
-                    controllerIndex[controllerCount] = i;
-
-                    // Adding tracked controller to control.
-                    if (trackedControllers == null) {
-                        trackedControllers = new ArrayList<VRTrackedController>(VR.k_unMaxTrackedDeviceCount);
-                    }
-                    trackedControllers.add(new OpenVRTrackedController(i, this, controllerName, manufacturerName, environment));
-
-                    // Send a Haptic pulse to the controller
-                    triggerHapticPulse(controllerCount, 1.0f);
-
-                    controllerCount++;
-                    logger.config("  Tracked controller " + (i + 1) + "/" + VR.k_unMaxTrackedDeviceCount + " " + controllerName + " (" + manufacturerName + ") attached.");
-                } else {
-                    logger.config("  Controller " + (i + 1) + "/" + VR.k_unMaxTrackedDeviceCount + " ignored.");
-                }
-            }
-        } else {
-            throw new IllegalStateException("VR input is not attached to a VR environment.");
-        }
+    	logger.config("Updating connected controllers.");
+    	
+    	if (environment != null){
+    		controllerCount = 0;
+        	for(int i=0;i<JOpenVRLibrary.k_unMaxTrackedDeviceCount;i++) {
+        		int classCallback = ((OpenVR)environment.getVRHardware()).getVRSystem().GetTrackedDeviceClass.apply(i);
+        		if( classCallback == JOpenVRLibrary.ETrackedDeviceClass.ETrackedDeviceClass_TrackedDeviceClass_Controller || classCallback == JOpenVRLibrary.ETrackedDeviceClass.ETrackedDeviceClass_TrackedDeviceClass_GenericTracker) {
+	
+        			String controllerName   = "Unknown";
+    				String manufacturerName = "Unknown";
+    				try {
+    					controllerName = OpenVRUtil.getTrackedDeviceStringProperty(((OpenVR)environment.getVRHardware()).getVRSystem(), i, JOpenVRLibrary.ETrackedDeviceProperty.ETrackedDeviceProperty_Prop_TrackingSystemName_String);
+    					manufacturerName = OpenVRUtil.getTrackedDeviceStringProperty(((OpenVR)environment.getVRHardware()).getVRSystem(), i, JOpenVRLibrary.ETrackedDeviceProperty.ETrackedDeviceProperty_Prop_ManufacturerName_String);
+    				} catch (Exception e) {
+                      logger.log(Level.WARNING, e.getMessage(), e);
+    				}
+        			
+        			controllerIndex[controllerCount] = i;
+        			
+        			// Adding tracked controller to control.
+        			if (trackedControllers == null){
+        				trackedControllers = new ArrayList<VRTrackedController>(JOpenVRLibrary.k_unMaxTrackedDeviceCount);
+        			}
+        			trackedControllers.add(new OpenVRTrackedController(i, this, controllerName, manufacturerName, environment));
+        			
+        			// Send a Haptic pulse to the controller
+        			triggerHapticPulse(controllerCount, 1.0f);
+        			
+        			controllerCount++;
+        			logger.config("  Tracked controller "+(i+1)+"/"+JOpenVRLibrary.k_unMaxTrackedDeviceCount+" "+controllerName+" ("+manufacturerName+") attached.");
+        		} else {
+        			logger.config("  Controller "+(i+1)+"/"+JOpenVRLibrary.k_unMaxTrackedDeviceCount+" ignored.");
+        		}
+        	}
+    	} else {
+    	  throw new IllegalStateException("VR input is not attached to a VR environment.");
+    	}
     }
 
     @Override

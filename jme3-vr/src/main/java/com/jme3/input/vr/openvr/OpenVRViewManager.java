@@ -400,16 +400,16 @@ public class OpenVRViewManager extends AbstractVRViewManager {
         cam.setFrame(finalPosition, finalRotation);
     }
 
-    private void setupCamerasAndViews() {
-
-        if (environment != null) {
-            // get desired frustum from original camera
-            Camera origCam = environment.getCamera();
+    private void setupCamerasAndViews() { 
+    	
+    	if (environment != null){
+    		// get desired frustum from original camera
+            Camera origCam = environment.getCamera();        
             float fFar = origCam.getFrustumFar();
             float fNear = origCam.getFrustumNear();
-
+            
             // restore frustum on distortion scene cam, if needed
-            if (environment.isInstanceRendering()) {
+            if( environment.isInstanceRendering() ) {
                 leftCamera = origCam;
             } else if (environment.compositorAllowed() == false) {
                 origCam.setFrustumFar(100f);

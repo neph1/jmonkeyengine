@@ -196,6 +196,10 @@ public final class GLImageFormats {
                 format(formatToGL, Format.Luminance32F,         GLExt.GL_LUMINANCE32F_ARB,       GL.GL_LUMINANCE,       GL.GL_FLOAT);
                 format(formatToGL, Format.Luminance16FAlpha16F, GLExt.GL_LUMINANCE_ALPHA16F_ARB, GL.GL_LUMINANCE_ALPHA, halfFloatFormat);
             }
+            format(formatToGL, Format.R16F,                 GL3.GL_R16F,                     GL3.GL_RED,            halfFloatFormat);
+            format(formatToGL, Format.R32F,                 GL3.GL_R32F,                     GL3.GL_RED,            GL.GL_FLOAT);
+            format(formatToGL, Format.RG16F,                GL3.GL_RG16F,                    GL3.GL_RG,             halfFloatFormat);
+            format(formatToGL, Format.RG32F,                GL3.GL_RG32F,                    GL3.GL_RG,             GL.GL_FLOAT);
             format(formatToGL, Format.RGB16F,               GLExt.GL_RGB16F_ARB,             GL.GL_RGB,             halfFloatFormat);
             format(formatToGL, Format.RGB32F,               GLExt.GL_RGB32F_ARB,             GL.GL_RGB,             GL.GL_FLOAT);
             format(formatToGL, Format.RGBA16F,              GLExt.GL_RGBA16F_ARB,            GL.GL_RGBA,            halfFloatFormat);
@@ -220,7 +224,7 @@ public final class GLImageFormats {
         
         // NOTE: OpenGL ES 2.0 does not support DEPTH_COMPONENT as internal format -- fallback to 16-bit depth.
         if (caps.contains(Caps.OpenGLES20)) {
-            format(formatToGL, Format.Depth, GL.GL_DEPTH_COMPONENT16, GL.GL_DEPTH_COMPONENT, GL.GL_UNSIGNED_BYTE);
+            format(formatToGL, Format.Depth, GL.GL_DEPTH_COMPONENT16, GL.GL_DEPTH_COMPONENT, GL.GL_UNSIGNED_SHORT);
         } else {
             format(formatToGL, Format.Depth, GL.GL_DEPTH_COMPONENT, GL.GL_DEPTH_COMPONENT, GL.GL_UNSIGNED_BYTE);
         }
@@ -240,6 +244,13 @@ public final class GLImageFormats {
             formatComp(formatToGL, Format.DXT1A, GLExt.GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE);
             formatComp(formatToGL, Format.DXT3,  GLExt.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE);
             formatComp(formatToGL, Format.DXT5,  GLExt.GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE);
+        }
+
+        if(caps.contains(Caps.OpenGL30)){
+            formatComp(formatToGL, Format.RGTC2,  GL3.GL_COMPRESSED_RG_RGTC2,  GL3.GL_RG,  GL.GL_UNSIGNED_BYTE);
+            formatComp(formatToGL, Format.SIGNED_RGTC2,  GL3.GL_COMPRESSED_SIGNED_RG_RGTC2,  GL3.GL_RG,  GL.GL_BYTE);
+            formatComp(formatToGL, Format.RGTC1,  GL3.GL_COMPRESSED_RED_RGTC1,  GL3.GL_RED,  GL.GL_UNSIGNED_BYTE);
+            formatComp(formatToGL, Format.SIGNED_RGTC1,  GL3.GL_COMPRESSED_SIGNED_RED_RGTC1,  GL3.GL_RED,  GL.GL_BYTE);
         }
         
         if (caps.contains(Caps.TextureCompressionETC2)) {

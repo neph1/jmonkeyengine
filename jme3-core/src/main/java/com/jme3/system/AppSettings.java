@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,6 +71,35 @@ public final class AppSettings extends HashMap<String, Object> {
     public static final String LWJGL_OPENGL2 = "LWJGL-OpenGL2";
 
     /**
+     * Use LWJGL as the display system and force using the core OpenGL3.0 renderer.
+     * <p>
+     * If the underlying system does not support OpenGL3.0, then the context
+     * initialization will throw an exception. Note that currently jMonkeyEngine
+     * does not have any shaders that support OpenGL3.0 therefore this 
+     * option is not useful.
+     * <p>
+     *
+     * @see AppSettings#setRenderer(java.lang.String)
+     */
+    public static final String LWJGL_OPENGL30 = "LWJGL-OpenGL30";
+
+    /**
+     * Use LWJGL as the display system and force using the core OpenGL3.2 renderer.
+     * <p>
+     * If the underlying system does not support OpenGL3.2, then the context
+     * initialization will throw an exception. Note that currently jMonkeyEngine
+     * does not have any shaders that support OpenGL3.2 therefore this
+     * option is not useful.
+     * <p>
+     * Note: OpenGL 3.2 is used to give 3.x support to Mac users.
+     *
+     * @deprecated Previously meant 3.2, use LWJGL_OPENGL32 or LWJGL_OPENGL30
+     * @see AppSettings#setRenderer(java.lang.String)
+     */
+    @Deprecated
+    public static final String LWJGL_OPENGL3 = "LWJGL-OpenGL3";
+
+    /**
      * Use LWJGL as the display system and force using the core OpenGL3.2 renderer.
      * <p>
      * If the underlying system does not support OpenGL3.2, then the context
@@ -82,7 +111,7 @@ public final class AppSettings extends HashMap<String, Object> {
      *
      * @see AppSettings#setRenderer(java.lang.String)
      */
-    public static final String LWJGL_OPENGL3 = "LWJGL-OpenGL3";
+    public static final String LWJGL_OPENGL32 = LWJGL_OPENGL3;
 
     /**
      * Use LWJGL as the display system and force using the OpenGL3.3 renderer.
@@ -100,9 +129,21 @@ public final class AppSettings extends HashMap<String, Object> {
      * If the underlying system does not support OpenGL4.0, then the context
      * initialization will throw an exception.
      *
+     * @deprecated Use LWJGL_OPENGL40
      * @see AppSettings#setRenderer(java.lang.String)
      */
+    @Deprecated
     public static final String LWJGL_OPENGL4 = "LWJGL-OpenGL4";
+
+    /**
+     * Use LWJGL as the display system and force using the OpenGL4.0 renderer.
+     * <p>
+     * If the underlying system does not support OpenGL4.0, then the context
+     * initialization will throw an exception.
+     *
+     * @see AppSettings#setRenderer(java.lang.String)
+     */
+    public static final String LWJGL_OPENGL40 = LWJGL_OPENGL4;
 
     /**
      * Use LWJGL as the display system and force using the OpenGL4.1 renderer.
@@ -274,7 +315,7 @@ public final class AppSettings extends HashMap<String, Object> {
      */
     public void mergeFrom(AppSettings other) {
         for (String key : other.keySet()) {
-            if (get(key) == null) {
+            if( !this.containsKey(key) ) {
                 put(key, other.get(key));
             }
         }
@@ -379,7 +420,7 @@ public final class AppSettings extends HashMap<String, Object> {
                     }
                 } else {
                     // Use old method for compatibility with older preferences
-                    // TODO: Remove when no longer neccessary
+                    // TODO: Remove when no longer necessary
                     Object defaultValue = defaults.get(key);
                     if (defaultValue instanceof Integer) {
                         put(key, prefs.getInt(key, (Integer) defaultValue));
@@ -816,7 +857,7 @@ public final class AppSettings extends HashMap<String, Object> {
     /**
      * Enable 3D stereo.
      * <p>This feature requires hardware support from the GPU driver.
-     * @see <a href="http://en.wikipedia.org/wiki/Quad_buffering">http://en.wikipedia.org/wiki/Quad_buffering</a><br />
+     * See <a href="http://en.wikipedia.org/wiki/Quad_buffering">http://en.wikipedia.org/wiki/Quad_buffering</a><br>
      * Once enabled, filters or scene processors that handle 3D stereo rendering
      * could use this feature to render using hardware 3D stereo.</p>
      * (Default: false)
@@ -1084,7 +1125,7 @@ public final class AppSettings extends HashMap<String, Object> {
     }
    
     /**
-     * Determine if the the display context will swap buffers every frame.
+     * Determine if the display context will swap buffers every frame.
      * 
      * @return True if buffer swapping is enabled, false otherwise.
      * 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2016 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import java.util.Collection;
 
 /**
  * Represents a hardware device actually running the OpenCL kernels.
- * A {@link Context} can be accociated with multiple {@code Devices}
+ * A {@link Context} can be associated with multiple {@code Devices}
  * that all belong to the same {@link Platform}.
  * For execution, a single device must be chosen and passed to a command
  * queue ({@link Context#createQueue(com.jme3.opencl.Device) }).
@@ -47,7 +47,7 @@ import java.util.Collection;
 public interface Device {
 	
     /**
-     * @return the platform accociated with this device
+     * @return the platform associated with this device
      */
     Platform getPlatform();
     
@@ -108,7 +108,7 @@ public interface Device {
      */
     boolean hasOpenGLInterop();
     /**
-     * Explicetly tests for the availability of the specified extension
+     * Explictly tests for the availability of the specified extension
      * @param extension the name of the extension
      * @return {@code true} iff this extension is supported
      */
@@ -138,7 +138,7 @@ public interface Device {
      * size specified as an unsigned integer value
      * in bits. Currently supported values are 32
      * or 64 bits.
-     * @return the size of an adress
+     * @return the size of an address
      */
 	int getAddressBits();
     /**
@@ -155,7 +155,7 @@ public interface Device {
 	long getMaximumWorkItemDimensions();
     /**
      * Maximum number of work-items that can be specified in each dimension of the
-     * work-group to {@link Kernel#Run2(com.jme3.opencl.CommandQueue, com.jme3.opencl.WorkSize, com.jme3.opencl.WorkSize, java.lang.Object...) }.
+     * work-group to {@link Kernel#Run2(com.jme3.opencl.CommandQueue, com.jme3.opencl.Kernel.WorkSize, com.jme3.opencl.Kernel.WorkSize, java.lang.Object...)}.
      * The array has a length of at least 3.
      * @return the maximum size of the work group in each dimension
      */

@@ -31,8 +31,6 @@
  */
 package com.jme3.material.logic;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.Light;
 import com.jme3.light.LightList;
@@ -41,20 +39,16 @@ import com.jme3.light.SpotLight;
 import com.jme3.material.RenderState;
 import com.jme3.material.TechniqueDef;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
-import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.Renderer;
 import com.jme3.scene.Geometry;
-import com.jme3.shader.DefineList;
 import com.jme3.shader.Shader;
 import com.jme3.shader.Uniform;
 import com.jme3.shader.VarType;
 import com.jme3.util.TempVars;
-import java.util.EnumSet;
 
 public final class MultiPassLightingLogic extends DefaultTechniqueDefLogic {
 
@@ -86,7 +80,7 @@ public final class MultiPassLightingLogic extends DefaultTechniqueDefLogic {
 
         for (int i = 0; i < lights.size(); i++) {
             Light l = lights.get(i);
-            if (l instanceof AmbientLight) {
+            if (l.getType() == Light.Type.Ambient  || l.getType() == Light.Type.Probe) {
                 continue;
             }
 
@@ -156,8 +150,6 @@ public final class MultiPassLightingLogic extends DefaultTechniqueDefLogic {
 
                     lightDir.setValue(VarType.Vector4, tmpLightDirection);
 
-                    break;
-                case Probe:
                     break;
                 default:
                     throw new UnsupportedOperationException("Unknown type of light: " + l.getType());

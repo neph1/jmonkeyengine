@@ -42,6 +42,7 @@ import com.jme3.util.IntMap.Entry;
 import com.jme3.util.SafeArrayList;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -106,6 +107,7 @@ public class InputManager implements RawInputListener {
     private final IntMap<Float> axisValues = new IntMap<Float>();
     private final SafeArrayList<RawInputListener> rawListeners = new SafeArrayList<RawInputListener>(RawInputListener.class);
     private final ArrayList<InputEvent> inputQueue = new ArrayList<InputEvent>();
+    private final List<JoystickConnectionListener> joystickConnectionListeners = new ArrayList<>();
 
     private static class Mapping {
 
@@ -430,9 +432,9 @@ public class InputManager implements RawInputListener {
     public void onMouseMotionEvent(MouseMotionEvent evt) {
         /*
          * If events aren't allowed, the event may be a "first mouse event"
-         * triggered by the constructor setting the the mouse listener.
+         * triggered by the constructor setting the mouse listener.
          * In that case, use the event to initialize the cursor position,
-         * but don't queue it for futher processing.
+         * but don't queue it for further processing.
          * This is part of the fix for issue #792.
          */
         cursorPos.set(evt.getX(), evt.getY());
@@ -874,7 +876,7 @@ public class InputManager implements RawInputListener {
             // larynx, 2011.06.10 - flag event as reusable because
             // the android input uses a non-allocating ringbuffer which
             // needs to know when the event is not anymore in inputQueue
-            // and therefor can be reused.
+            // and therefore can be reused.
             event.setConsumed();
         }
 
@@ -953,4 +955,62 @@ public class InputManager implements RawInputListener {
         cursorPos.set(evt.getX(), evt.getY());
         inputQueue.add(evt);
     }
+
+    /**
+     * Re-sets the joystick list when a joystick is added or removed.
+     * This should only be called internally.
+     *
+     * @param joysticks
+     */
+    public void setJoysticks(Joystick[] joysticks) {
+        this.joysticks = joysticks;
+    }
+
+    /**
+     * Add a listener that reports when a joystick has been added or removed.
+     * Currently only implemented in LWJGL3
+     * @param listener the listner.
+     */
+    public boolean addJoystickConnectionListener(JoystickConnectionListener listener) {
+        return joystickConnectionListeners.add(listener);
+    }
+
+    /**
+     * Remove an existing listener.
+     * @param listener the listener to remove.
+     * @return true if this listener was removed, or false if it was not found.
+     */
+    public boolean removeJoystickConnectionListener(JoystickConnectionListener listener) {
+        return joystickConnectionListeners.remove(listener);
+    }
+
+    /**
+     * Remove all joystick connection listeners.
+     */
+    public void clearJoystickConnectionListeners() {
+        joystickConnectionListeners.clear();
+    }
+
+    /**
+     * Called when a joystick has been connected.
+     * This should only be called internally.
+     * @param joystick the joystick that has been connected.
+     */
+    public void fireJoystickConnectedEvent(Joystick joystick) {
+        for (JoystickConnectionListener listener : joystickConnectionListeners) {
+            listener.onConnected(joystick);
+        }
+    }
+
+    /**
+     * Called when a joystick has been disconnected.
+     * This should only be called internally.
+     * @param joystick the joystick that has been disconnected.
+     */
+    public void fireJoystickDisconnectedEvent(Joystick joystick) {
+        for (JoystickConnectionListener listener : joystickConnectionListeners) {
+            listener.onDisconnected(joystick);
+        }
+    }
+
 }

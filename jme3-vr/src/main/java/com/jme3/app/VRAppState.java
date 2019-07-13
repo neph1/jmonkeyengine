@@ -1,7 +1,7 @@
 package com.jme3.app;
 
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,6 @@ import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -118,7 +117,7 @@ public class VRAppState extends AbstractAppState {
      }
     
     /**
-     * Create a new VR app state with given settings. The app state relies on the the given {@link VREnvironment VR environment}.
+     * Create a new VR app state with given settings. The app state relies on the given {@link VREnvironment VR environment}.
      * @param settings the settings to use.
      * @param environment the {@link VREnvironment VR environment} that this app state is using.
      */
@@ -147,9 +146,9 @@ public class VRAppState extends AbstractAppState {
     }
 
     /**
-     * Set the frustrum values for the application.
-     * @param near the frustrum near value.
-     * @param far the frustrum far value.
+     * Set the frustum values for the application.
+     * @param near the frustum near value.
+     * @param far the frustum far value.
      */
     public void setFrustrumNearFar(float near, float far) {
         fNear = near;
@@ -293,7 +292,7 @@ public class VRAppState extends AbstractAppState {
     }
     
     /**
-     * Get the scene observer. If no observer has been set, this method return the application {@link #getCamera() camera}.
+     * Get the scene observer. If no observer has been set, this method returns the application camera.
      * @return the scene observer. 
      * @see #setObserver(Spatial)
      */
@@ -302,7 +301,7 @@ public class VRAppState extends AbstractAppState {
     }
     
     /**
-     * Set the scene observer. The VR headset will be linked to it. If no observer is set, the VR headset is linked to the the application {@link #getCamera() camera}.
+     * Set the scene observer. The VR headset will be linked to it. If no observer is set, the VR headset is linked to the application camera.
      * @param observer the scene observer.
      */
     public void setObserver(Spatial observer) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@
 package com.jme3.renderer;
 
 import com.jme3.material.RenderState;
+import com.jme3.material.RenderState.BlendFunc;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
@@ -111,6 +112,30 @@ public class RenderContext {
     public RenderState.BlendEquationAlpha blendEquationAlpha = RenderState.BlendEquationAlpha.InheritColor;
 
     /**
+     * @see RenderState#setCustomBlendFactors(com.jme3.material.RenderState.BlendFunc, com.jme3.material.RenderState.BlendFunc,
+     *      com.jme3.material.RenderState.BlendFunc, com.jme3.material.RenderState.BlendFunc)
+     */
+    public RenderState.BlendFunc sfactorRGB = RenderState.BlendFunc.One;
+
+    /**
+     * @see RenderState#setCustomBlendFactors(com.jme3.material.RenderState.BlendFunc, com.jme3.material.RenderState.BlendFunc,
+     *      com.jme3.material.RenderState.BlendFunc, com.jme3.material.RenderState.BlendFunc)
+     */
+    public RenderState.BlendFunc dfactorRGB = RenderState.BlendFunc.One;
+
+    /**
+     * @see RenderState#setCustomBlendFactors(com.jme3.material.RenderState.BlendFunc, com.jme3.material.RenderState.BlendFunc,
+     *      com.jme3.material.RenderState.BlendFunc, com.jme3.material.RenderState.BlendFunc)
+     */
+    public RenderState.BlendFunc sfactorAlpha = RenderState.BlendFunc.One;
+
+    /**
+     * @see RenderState#setCustomBlendFactors(com.jme3.material.RenderState.BlendFunc, com.jme3.material.RenderState.BlendFunc,
+     *      com.jme3.material.RenderState.BlendFunc, com.jme3.material.RenderState.BlendFunc)
+     */
+    public RenderState.BlendFunc dfactorAlpha = RenderState.BlendFunc.One;
+
+    /**
      * @see RenderState#setWireframe(boolean) 
      */
     public boolean wireframe = false;
@@ -167,19 +192,19 @@ public class RenderContext {
     /**
      * Currently bound element array vertex buffer.
      * 
-     * @see Renderer#renderMesh(com.jme3.scene.Mesh, int, int) 
+     * @see Renderer#renderMesh(com.jme3.scene.Mesh, int, int, com.jme3.scene.VertexBuffer[]) 
      */
     public int boundElementArrayVBO;
 
     /**
-     * @see Renderer#renderMesh(com.jme3.scene.Mesh, int, int) 
+     * @see Renderer#renderMesh(com.jme3.scene.Mesh, int, int, com.jme3.scene.VertexBuffer[]) 
      */
     public int boundVertexArray;
 
     /**
      * Currently bound array vertex buffer.
      * 
-     * @see Renderer#renderMesh(com.jme3.scene.Mesh, int, int) 
+     * @see Renderer#renderMesh(com.jme3.scene.Mesh, int, int, com.jme3.scene.VertexBuffer[]) 
      */
     public int boundArrayVBO;
     
@@ -266,6 +291,10 @@ public class RenderContext {
         blendMode = RenderState.BlendMode.Off;
         blendEquation = RenderState.BlendEquation.Add;
         blendEquationAlpha = RenderState.BlendEquationAlpha.InheritColor;
+        sfactorRGB = BlendFunc.One;
+        dfactorRGB = BlendFunc.One;
+        sfactorAlpha = BlendFunc.One;
+        dfactorAlpha = BlendFunc.One;
         wireframe = false;
         boundShaderProgram = 0;
         boundShader = null;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.SceneProcessor;
 import com.jme3.profile.AppProfiler;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.Caps;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.Renderer;
 import com.jme3.renderer.ViewPort;
@@ -63,11 +62,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * PssmShadow renderer use Parrallel Split Shadow Mapping technique (pssm)<br>
+ * PssmShadow renderer use Parallel Split Shadow Mapping technique (pssm)<br>
  * It splits the view frustum in several parts and compute a shadow map for each
  * one.<br> splits are distributed so that the closer they are from the camera,
  * the smaller they are to maximize the resolution used of the shadow map.<br>
- * This result in a better quality shadow than standard shadow mapping.<br> for
+ * This results in a better quality shadow than standard shadow mapping.<br> for
  * more informations on this read this <a
  * href="http://http.developer.nvidia.com/GPUGems3/gpugems3_ch10.html">http://http.developer.nvidia.com/GPUGems3/gpugems3_ch10.html</a><br>
  * <p/>
@@ -187,9 +186,7 @@ public class PssmShadowRenderer implements SceneProcessor {
      * @param manager the application asset manager
      * @param size the size of the rendered shadowmaps (512,1024,2048, etc...)
      * @param nbSplits the number of shadow maps rendered (the more shadow maps
-     * the more quality, the less fps).
-     * @param nbSplits the number of shadow maps rendered (the more shadow maps
-     * the more quality, the less fps).
+     * the more quality, the less fps)
      */
     public PssmShadowRenderer(AssetManager manager, int size, int nbSplits) {
         this(manager, size, nbSplits, new Material(manager, "Common/MatDefs/Shadow/PostShadow.j3md"));
@@ -324,7 +321,7 @@ public class PssmShadowRenderer implements SceneProcessor {
         applyHWShadows = true;
     }
 
-    //debug function that create a displayable frustrum
+    //debug function that create a displayable frustum
     private Geometry createFrustum(Vector3f[] pts, int i) {
         WireFrustum frustum = new WireFrustum(pts);
         Geometry frustumMdl = new Geometry("f", frustum);
@@ -368,7 +365,7 @@ public class PssmShadowRenderer implements SceneProcessor {
     /**
      * returns the light direction used by the processor
      *
-     * @return
+     * @return the pre-existing vector
      */
     public Vector3f getDirection() {
         return direction;
@@ -430,7 +427,7 @@ public class PssmShadowRenderer implements SceneProcessor {
             // update frustum points based on current camera and split
             ShadowUtil.updateFrustumPoints(viewCam, splitsArray[i], splitsArray[i + 1], 1.0f, points);
 
-            //Updating shadow cam with curent split frustra
+            //Updating shadow cam with current split frusta
             ShadowUtil.updateShadowCamera(viewPort, lightReceivers, shadowCam, points, splitOccluders, shadowMapSize);
 
             //saving light view projection matrix for this split            
@@ -484,7 +481,7 @@ public class PssmShadowRenderer implements SceneProcessor {
     }
 
     /**
-     * For debugging purpose Allow to "snapshot" the current frustrum to the
+     * For debugging purpose Allow to "snapshot" the current frustum to the
      * scene
      */
     public void displayDebug() {
@@ -497,7 +494,7 @@ public class PssmShadowRenderer implements SceneProcessor {
             displayShadowMap(renderManager.getRenderer());
         }
         if (!noOccluders) {
-            //setting params to recieving geometry list
+            //setting params to receiving geometry list
             setMatParams();
 
             Camera cam = viewPort.getCamera();
@@ -604,10 +601,10 @@ public class PssmShadowRenderer implements SceneProcessor {
 
     /*
      * Adjust the repartition of the different shadow maps in the shadow extend
-     * usualy goes from 0.0 to 1.0
+     * usually goes from 0.0 to 1.0
      * a low value give a more linear repartition resulting in a constant quality in the shadow over the extends, but near shadows could look very jagged
      * a high value give a more logarithmic repartition resulting in a high quality for near shadows, but the quality quickly decrease over the extend.
-     * the default value is set to 0.65f (theoric optimal value).
+     * the default value is set to 0.65f (theoretic optimal value).
      * @param lambda the lambda value.
      */
     public void setLambda(float lambda) {
@@ -695,9 +692,9 @@ public class PssmShadowRenderer implements SceneProcessor {
     }
 
     /**
-     * Set this to false if you want to use several PssmRederers to have
+     * Set this to false if you want to use several PssmRenderers to have
      * multiple shadows cast by multiple light sources. Make sure the last
-     * PssmRenderer in the stack DO flush the queues, but not the others
+     * PssmRenderer in the stack DOES flush the queues, but not the others
      *
      * @param flushQueues
      */

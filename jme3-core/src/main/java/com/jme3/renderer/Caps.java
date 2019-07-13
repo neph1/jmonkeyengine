@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2019 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -224,7 +224,7 @@ public enum Caps {
      */
     GeometryShader,
     /**
-     * Supports Tesselation shader
+     * Supports Tessellation shader
      */
     TesselationShader,
     /**
@@ -367,11 +367,12 @@ public enum Caps {
      * <p>
      * Use of NPOT textures is allowed iff:
      * <ul>
-     * <li>The {@link Texture.WrapMode} is set to 
-     * {@link Texture.WrapMode#EdgeClamp}.</li>
-     * <li>Mip-mapping is not used, meaning {@link Texture.MinFilter} is set to
-     * {@link Texture.MinFilter#BilinearNoMipMaps} or 
-     * {@link Texture.MinFilter#NearestNoMipMaps}</li>
+     * <li>The {@link com.jme3.texture.Texture.WrapMode} is set to 
+     * {@link com.jme3.texture.Texture.WrapMode#EdgeClamp}.</li>
+     * <li>Mip-mapping is not used, meaning 
+     * {@link com.jme3.texture.Texture.MinFilter} is set to
+     * {@link com.jme3.texture.Texture.MinFilter#BilinearNoMipMaps} or 
+     * {@link com.jme3.texture.Texture.MinFilter#NearestNoMipMaps}</li>
      * </ul>
      */
     PartialNonPowerOfTwoTextures,
@@ -394,7 +395,15 @@ public enum Caps {
     /**
      * GPU can provide and accept binary shaders.
      */
-    BinaryShader;
+    BinaryShader,
+    /**
+     * Supporting working with UniformBufferObject.
+     */
+    UniformBufferObject,
+    /**
+     * Supporting working with ShaderStorageBufferObjects.
+     */
+    ShaderStorageBufferObject;
 
     /**
      * Returns true if given the renderer capabilities, the texture
