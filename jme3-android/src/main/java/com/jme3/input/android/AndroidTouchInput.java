@@ -74,7 +74,7 @@ public class AndroidTouchInput implements TouchInput {
     protected int numPointers = 0;
     final private HashMap<Integer, Vector2f> lastPositions = new HashMap<Integer, Vector2f>();
     final private ConcurrentLinkedQueue<InputEvent> inputEventQueue = new ConcurrentLinkedQueue<InputEvent>();
-    private final static int MAX_TOUCH_EVENTS = 1024;
+    private final static int MAX_TOUCH_EVENTS = 1024; 
     private final TouchEventPool touchEventPool = new TouchEventPool(MAX_TOUCH_EVENTS);
     private float scaleX = 1f;
     private float scaleY = 1f;
@@ -327,6 +327,16 @@ public class AndroidTouchInput implements TouchInput {
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             evt = new TouchEvent();
             evt.set(TouchEvent.Type.KEY_UP);
+            evt.setKeyCode(event.getKeyCode());
+            evt.setCharacters(event.getCharacters());
+            evt.setTime(event.getEventTime());
+
+            // Send the event
+            addEvent(evt);
+
+        } else if (event.getAction() == KeyEvent.ACTION_MULTIPLE) {
+            evt = new TouchEvent();
+            evt.set(TouchEvent.Type.KEY_MULTIPLE);
             evt.setKeyCode(event.getKeyCode());
             evt.setCharacters(event.getCharacters());
             evt.setTime(event.getEventTime());
