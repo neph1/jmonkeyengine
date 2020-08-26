@@ -343,7 +343,6 @@ public class AndroidTouchInput implements TouchInput {
 
             // Send the event
             addEvent(evt);
-
         }
 
         if (isSimulateKeyboard()) {
