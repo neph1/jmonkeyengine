@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2021 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -98,9 +98,9 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
     private int meshIndex = 0;
     private int texCoordIndex = 0;
     private String ignoreUntilEnd = null;
-    private List<Geometry> geoms = new ArrayList<Geometry>();
-    private ArrayList<Boolean> usesSharedMesh = new ArrayList<Boolean>();
-    private IntMap<List<VertexBuffer>> lodLevels = new IntMap<List<VertexBuffer>>();
+    private List<Geometry> geoms = new ArrayList<>();
+    private ArrayList<Boolean> usesSharedMesh = new ArrayList<>();
+    private IntMap<List<VertexBuffer>> lodLevels = new IntMap<>();
     private AnimData animData;
 
     public MeshLoader() {
@@ -289,17 +289,17 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         geoms.add(geom);
     }
 
-    private void startSharedGeom(String vertexcount) throws SAXException {
+    private void startSharedGeom(String vertexCount) throws SAXException {
         sharedMesh = new Mesh();
-        vertCount = parseInt(vertexcount);
+        vertCount = parseInt(vertexCount);
         usesSharedVerts = false;
 
         geom = null;
         mesh = sharedMesh;
     }
 
-    private void startGeometry(String vertexcount) throws SAXException {
-        vertCount = parseInt(vertexcount);
+    private void startGeometry(String vertexCount) throws SAXException {
+        vertCount = parseInt(vertexCount);
     }
 
     /**
@@ -345,7 +345,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             float sum = w0 + w1 + w2 + w3;
             if (sum != 1f) {
                 weightsFloatData.position(weightsFloatData.position() - 4);
-                // compute new vals based on sum
+                // Compute new weights based on sum.
                 float sumToB = sum == 0 ? 0 : 1f / sum;
                 weightsFloatData.put(w0 * sumToB);
                 weightsFloatData.put(w1 * sumToB);
@@ -523,10 +523,10 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         buf.put(color.r).put(color.g).put(color.b).put(color.a);
     }
 
-    private void startLodFaceList(String submeshindex, String numfaces) {
-        int index = Integer.parseInt(submeshindex);
+    private void startLodFaceList(String submeshIndex, String numFaces) {
+        int index = Integer.parseInt(submeshIndex);
         mesh = geoms.get(index).getMesh();
-        int faceCount = Integer.parseInt(numfaces);
+        int faceCount = Integer.parseInt(numFaces);
 
         VertexBuffer originalIndexBuffer = mesh.getBuffer(Type.Index);
         vb = new VertexBuffer(VertexBuffer.Type.Index);
@@ -553,8 +553,8 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         levels.add(vb);
     }
 
-    private void startLevelOfDetail(String numlevels) {
-//        numLevels = Integer.parseInt(numlevels);
+    private void startLevelOfDetail(String numLevels) {
+//        numLevels = Integer.parseInt(numLevels);
     }
 
     private void endLevelOfDetail() {
@@ -599,9 +599,9 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
     }
 
     private void startSkeleton(String name) {
-        AssetKey assetKey = new AssetKey(folderName + name + ".xml");
+        AssetKey<AnimData> assetKey = new AssetKey<>(folderName + name + ".xml");
         try {
-            animData = (AnimData) assetManager.loadAsset(assetKey);
+            animData = assetManager.loadAsset(assetKey);
         } catch (AssetNotFoundException ex) {
             logger.log(Level.WARNING, "Cannot locate {0} for model {1}", new Object[]{assetKey, key});
             animData = null;
@@ -720,7 +720,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             geom = null;
             mesh = null;
         } else if (qName.equals("submeshes") && !submeshNamesHack) {
-            // IMPORTANT: restore sharedmesh, for use with shared boneweights
+            // IMPORTANT: restore shared mesh, for use with shared bone weights
             geom = null;
             mesh = sharedMesh;
             usesSharedVerts = false;
@@ -821,6 +821,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
         return model;
     }
 
+    @Override
     public Object load(AssetInfo info) throws IOException {
         try {
             key = info.getKey();
@@ -844,7 +845,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
                 if (materialList == null && materialName != null) {
                     OgreMaterialKey materialKey = new OgreMaterialKey(folderName + materialName + ".material");
                     try {
-                        materialList = (MaterialList) assetManager.loadAsset(materialKey);
+                        materialList = assetManager.loadAsset(materialKey);
                     } catch (AssetNotFoundException e) {
                         logger.log(Level.WARNING, "Cannot locate {0} for model {1}", new Object[]{materialKey, key});
                     }
@@ -861,7 +862,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             if (materialList == null) {
                 OgreMaterialKey materialKey = new OgreMaterialKey(folderName + meshName + ".material");
                 try {
-                    materialList = (MaterialList) assetManager.loadAsset(materialKey);
+                    materialList = assetManager.loadAsset(materialKey);
                 } catch (AssetNotFoundException e) {
                     logger.log(Level.WARNING, "Cannot locate {0} for model {1}", new Object[]{materialKey, key});
                 }
@@ -890,11 +891,7 @@ public class MeshLoader extends DefaultHandler implements AssetLoader {
             }
 
             return compileModel();
-        } catch (SAXException ex) {
-            IOException ioEx = new IOException("Error while parsing Ogre3D mesh.xml");
-            ioEx.initCause(ex);
-            throw ioEx;
-        } catch (ParserConfigurationException ex) {
+        } catch (SAXException | ParserConfigurationException ex) {
             IOException ioEx = new IOException("Error while parsing Ogre3D mesh.xml");
             ioEx.initCause(ex);
             throw ioEx;

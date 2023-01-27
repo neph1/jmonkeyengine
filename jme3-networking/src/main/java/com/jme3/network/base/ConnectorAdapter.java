@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2020 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,6 +65,7 @@ public class ConnectorAdapter extends Thread
     private MessageListener<Object> dispatcher;
     private ErrorListener<Object> errorHandler;
     private AtomicBoolean go = new AtomicBoolean(true);
+    private MessageProtocol protocol;
 
     private BlockingQueue<ByteBuffer> outbound;
      
@@ -75,11 +76,13 @@ public class ConnectorAdapter extends Thread
     // through this connector.
     private boolean reliable;
  
-    public ConnectorAdapter( Connector connector, MessageListener<Object> dispatcher, 
+    public ConnectorAdapter( Connector connector, MessageProtocol protocol, 
+                             MessageListener<Object> dispatcher, 
                              ErrorListener<Object> errorHandler, boolean reliable )
     {
         super( String.valueOf(connector) );
-        this.connector = connector;        
+        this.connector = connector;
+        this.protocol = protocol;        
         this.dispatcher = dispatcher;
         this.errorHandler = errorHandler;
         this.reliable = reliable;
@@ -98,7 +101,7 @@ public class ConnectorAdapter extends Thread
         // if a TCP outbound queue fills to capacity and a client sends
         // in such a way that they block TCP message handling then if the HostedConnection
         // on the server is similarly blocked then the TCP network buffers may
-        // all get full and no outbound messages move and we forever block
+        // all get full, and no outbound messages move, and we forever block
         // on the queue.
         // However, in practice this can't really happen... or at least it's
         // the sign of other really bad things.
@@ -149,9 +152,10 @@ public class ConnectorAdapter extends Thread
         errorHandler.handleError( this, e );
     }
  
+    @Override
     public void run()
     {
-        MessageProtocol protocol = new MessageProtocol();
+        MessageBuffer messageBuffer = protocol.createBuffer();
  
         try {                  
             while( go.get() ) {
@@ -166,10 +170,10 @@ public class ConnectorAdapter extends Thread
                     }
                 }
                 
-                protocol.addBuffer( buffer );
+                messageBuffer.addBytes(buffer);
                 
                 Message m = null;
-                while( (m = protocol.getMessage()) != null ) {
+                while( (m = messageBuffer.pollMessage()) != null ) {
                     m.setReliable( reliable );
                     dispatch( m );
                 }
@@ -200,6 +204,7 @@ public class ConnectorAdapter extends Thread
             }
         }
         
+        @Override
         public void run()
         {
             while( go.get() ) {

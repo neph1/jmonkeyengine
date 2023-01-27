@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2015 jMonkeyEngine
+ * Copyright (c) 2009-2021 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ public final class FbxToJmeTrack {
     public transient final Map<String, FbxAnimCurveNode> animCurves = new HashMap<String, FbxAnimCurveNode>();
 
     public long[] getKeyTimes() {
-        Set<Long> keyFrameTimesSet = new HashSet<Long>();
+        Set<Long> keyFrameTimesSet = new HashSet<>();
         for (FbxAnimCurveNode curveNode : animCurves.values()) {
             for (FbxAnimCurve curve : curveNode.getCurves()) {
                 for (long keyTime : curve.getKeyTimes()) {
@@ -140,7 +140,7 @@ public final class FbxToJmeTrack {
             if (time > duration) {
                 // Expand animation duration to fit the curve.
                 duration = time;
-                System.out.println("actual duration: " + duration);
+//                System.out.println("actual duration: " + duration);
             }
 
             times[i] = time;
@@ -153,8 +153,8 @@ public final class FbxToJmeTrack {
                 rotations[i] = rotationCurve.getQuaternionValue(fbxTime);
                 if (i > 0) {
                     if (rotations[i - 1].dot(rotations[i]) < 0) {
-                        System.out.println("rotation will go the long way, oh noes");
-                        rotations[i - 1].negate();
+//                        System.out.println("rotation will go the long way, oh noes");
+                        rotations[i - 1].negateLocal();
                     }
                 }
             } else {

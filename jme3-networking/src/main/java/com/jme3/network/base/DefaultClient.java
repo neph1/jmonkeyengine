@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2021 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@ package com.jme3.network.base;
 
 import com.jme3.network.*;
 import com.jme3.network.ClientStateListener.DisconnectInfo;
+import com.jme3.network.base.protocol.SerializerMessageProtocol;
 import com.jme3.network.kernel.Connector;
 import com.jme3.network.message.ChannelInfoMessage;
 import com.jme3.network.message.ClientRegistrationMessage;
@@ -56,7 +57,7 @@ import java.util.logging.Logger;
  */
 public class DefaultClient implements Client
 {
-    static final Logger log = Logger.getLogger(DefaultClient.class.getName());
+    private static final Logger log = Logger.getLogger(DefaultClient.class.getName());
     
     // First two channels are reserved for reliable and
     // unreliable.  Note: channels are endpoint specific so these
@@ -67,22 +68,23 @@ public class DefaultClient implements Client
     private static final int CH_UNRELIABLE = 1;
     private static final int CH_FIRST = 2;
         
-    private final ThreadLocal<ByteBuffer> dataBuffer = new ThreadLocal<ByteBuffer>();
+    private final ThreadLocal<ByteBuffer> dataBuffer = new ThreadLocal<>();
     
     private int id = -1;
     private boolean isRunning = false;
     private final CountDownLatch connecting = new CountDownLatch(1);
     private String gameName;
     private int version;
-    private final MessageListenerRegistry<Client> messageListeners = new MessageListenerRegistry<Client>();
-    private final List<ClientStateListener> stateListeners = new CopyOnWriteArrayList<ClientStateListener>();
-    private final List<ErrorListener<? super Client>> errorListeners = new CopyOnWriteArrayList<ErrorListener<? super Client>>();
+    private final MessageListenerRegistry<Client> messageListeners = new MessageListenerRegistry<>();
+    private final List<ClientStateListener> stateListeners = new CopyOnWriteArrayList<>();
+    private final List<ErrorListener<? super Client>> errorListeners = new CopyOnWriteArrayList<>();
     private final Redispatch dispatcher = new Redispatch();
-    private final List<ConnectorAdapter> channels = new ArrayList<ConnectorAdapter>();    
+    private final List<ConnectorAdapter> channels = new ArrayList<>();    
  
     private ConnectorFactory connectorFactory;
     
     private ClientServiceManager services;
+    private MessageProtocol protocol = new SerializerMessageProtocol();
     
     public DefaultClient( String gameName, int version )
     {
@@ -114,9 +116,9 @@ public class DefaultClient implements Client
             throw new IllegalStateException( "Channels already exist." );
             
         this.connectorFactory = connectorFactory;
-        channels.add(new ConnectorAdapter(reliable, dispatcher, dispatcher, true));
+        channels.add(new ConnectorAdapter(reliable, protocol, dispatcher, dispatcher, true));
         if( fast != null ) {
-            channels.add(new ConnectorAdapter(fast, dispatcher, dispatcher, false));
+            channels.add(new ConnectorAdapter(fast, protocol, dispatcher, dispatcher, false));
         } else {
             // Add the null adapter to keep the indexes right
             channels.add(null);
@@ -149,16 +151,16 @@ public class DefaultClient implements Client
         // This is used to match the TCP and UDP endpoints up on the
         // other end since they may take different routes to get there.
         // Behind NAT, many game clients may be coming over the same
-        // IP address from the server's perspective and they may have
+        // IP address from the server's perspective, and they may have
         // their UDP ports mapped all over the place.
         //
         // Since currentTimeMillis() is absolute time and nano time
-        // is roughtly related to system start time, adding these two
+        // is roughly related to system start time, adding these two
         // together should be plenty unique for our purposes.  It wouldn't
         // hurt to reconcile with IP on the server side, though.
         long tempId = System.currentTimeMillis() + System.nanoTime();
 
-        // Set it true here so we can send some messages.
+        // Set it true here, so we can send some messages.
         isRunning = true;        
                 
         ClientRegistrationMessage reg;
@@ -279,7 +281,7 @@ public class DefaultClient implements Client
         buffer.clear();        
  
         // Convert the message to bytes
-        buffer = MessageProtocol.messageToBuffer(message, buffer);
+        buffer = protocol.toByteBuffer(message, buffer);
                 
         // Since we share the buffer between invocations, we will need to 
         // copy this message's part out of it.  This is because we actually
@@ -408,12 +410,13 @@ public class DefaultClient implements Client
      *  Either calls the ErrorListener or closes the connection
      *  if there are no listeners.  
      */ 
+    @SuppressWarnings("unchecked")
     protected void handleError( Throwable t )
     {
         // If there are no listeners then close the connection with
         // a reason
         if( errorListeners.isEmpty() ) {
-            log.log( Level.SEVERE, "Termining connection due to unhandled error", t );
+            log.log( Level.SEVERE, "Terminating connection due to unhandled error", t );
             DisconnectInfo info = new DisconnectInfo();
             info.reason = "Connection Error";
             info.error = t;
@@ -431,7 +434,7 @@ public class DefaultClient implements Client
         try {               
             for( int i = 0; i < ports.length; i++ ) {
                 Connector c = connectorFactory.createConnector( i, ports[i] );
-                ConnectorAdapter ca = new ConnectorAdapter(c, dispatcher, dispatcher, true);
+                ConnectorAdapter ca = new ConnectorAdapter(c, protocol, dispatcher, dispatcher, true);
                 int ch = channels.size(); 
                 channels.add( ca );
                 
@@ -479,8 +482,8 @@ public class DefaultClient implements Client
             }
             return;
         } else if( m instanceof ChannelInfoMessage ) {
-            // This is an interum step in the connection process and
-            // now we need to add a bunch of connections
+            // This is an interim step in the connection process, and
+            // now we need to add a bunch of connections.
             configureChannels( ((ChannelInfoMessage)m).getId(), ((ChannelInfoMessage)m).getPorts() );
             return; 
         } else if( m instanceof DisconnectMessage ) {
@@ -512,7 +515,7 @@ public class DefaultClient implements Client
         public void handleError( Object source, Throwable t )
         {
             // Only doing the DefaultClient.this to make the code
-            // checker happy... it compiles fine without it but I
+            // checker happy... it compiles fine without it, but I
             // don't like red lines in my editor. :P
             DefaultClient.this.handleError( t );   
         }
