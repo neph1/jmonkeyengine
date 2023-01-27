@@ -130,12 +130,15 @@ public class LWJGLOpenVRViewManager extends AbstractVRViewManager {
             Object obs = environment.getObserver();
             Quaternion objRot;
             Vector3f objPos;
+            Vector3f objScale;
             if (obs instanceof Camera) {
                 objRot = ((Camera) obs).getRotation();
                 objPos = ((Camera) obs).getLocation();
+                objScale = Vector3f.UNIT_XYZ;
             } else {
                 objRot = ((Spatial) obs).getWorldRotation();
                 objPos = ((Spatial) obs).getWorldTranslation();
+                objScale = ((Spatial) obs).getWorldScale();
             }
             // grab the hardware handle
             VRAPI dev = environment.getVRHardware();
@@ -152,8 +155,8 @@ public class LWJGLOpenVRViewManager extends AbstractVRViewManager {
                     finalRotation.multLocal(hmdRot);
     }
 
-                finalizeCamera(dev.getHMDVectorPoseLeftEye(), objPos, getLeftCamera());
-                finalizeCamera(dev.getHMDVectorPoseRightEye(), objPos, getRightCamera());
+                finalizeCamera(dev.getHMDVectorPoseLeftEye(), objPos, objScale, getLeftCamera());
+                finalizeCamera(dev.getHMDVectorPoseRightEye(), objPos, objScale, getRightCamera());
             } else {
                 getLeftCamera().setFrame(objPos, objRot);
                 getRightCamera().setFrame(objPos, objRot);
@@ -380,9 +383,11 @@ public class LWJGLOpenVRViewManager extends AbstractVRViewManager {
      * @param obsPosition the observer position.
      * @param cam the camera to place.
      */
-    private void finalizeCamera(Vector3f eyePos, Vector3f obsPosition, Camera cam) {
+    private void finalizeCamera(Vector3f eyePos, Vector3f obsPosition, Vector3f obsScale, Camera cam) {
+        
         finalRotation.mult(eyePos, finalPosition);
         finalPosition.addLocal(hmdPos);
+        finalPosition.multLocal(obsScale);
         if (obsPosition != null) {
             finalPosition.addLocal(obsPosition);
         }

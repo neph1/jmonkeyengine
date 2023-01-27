@@ -221,6 +221,7 @@ public class VRAppState extends AbstractAppState {
             environment.getDummyCamera().getRotation().mult(pos, pos);
             return pos.addLocal(environment.getDummyCamera().getLocation());
         } else {
+            pos.multLocal(((Spatial)environment.getObserver()).getWorldScale());
             ((Spatial)environment.getObserver()).getWorldRotation().mult(pos, pos);
             return pos.addLocal(((Spatial)environment.getObserver()).getWorldTranslation());
         }

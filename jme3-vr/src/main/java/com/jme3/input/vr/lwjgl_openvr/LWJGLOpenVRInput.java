@@ -558,6 +558,7 @@ public class LWJGLOpenVRInput implements VRInputAPI {
                     ((Camera) obs).getRotation().mult(pos, pos);
                     return pos.addLocal(((Camera) obs).getLocation());
                 } else {
+                    pos.multLocal(((Spatial) obs).getWorldScale());
                     ((Spatial) obs).getWorldRotation().mult(pos, pos);
                     return pos.addLocal(((Spatial) obs).getWorldTranslation());
                 }
